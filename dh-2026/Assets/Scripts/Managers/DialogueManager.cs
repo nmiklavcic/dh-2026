@@ -8,7 +8,30 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance { get; private set; }
 
+    
+    
     // ── Data structures ──────────────────────────────────────
+
+    private HashSet<string> _flags = new HashSet<string>();
+
+    public void setFlag(string flag) => _flags.Add(flag);
+    
+    public bool hasFlag(string flag) => _flags.Contain(flag);
+
+    // how to set flag
+    // Change option to :
+    // new Option { Text = "...", OnChosen = () => 
+    // {
+    //     SetFlag("...");
+    //     LoadSituation("...");
+    // }, Row = X}
+    //
+
+    // how to check flag and choose between two options :
+    // Change option that has differing situations
+    // new Option { Text = "...", OnChosen = () => LoadSituation(HasFlag("carpet_seen") ? "carpet_2" : "carpet_1"), Row = 2 }
+
+
 
     public class Option
     {
@@ -64,6 +87,7 @@ public class DialogueManager : MonoBehaviour
             
             ["cabinet_start"] = new Situation
             {
+                // option if user ends up back at the start
                 Description = "",
                 Options = new List<Option>
                 {
@@ -136,6 +160,7 @@ public class DialogueManager : MonoBehaviour
                 {
                     // the options for when you've already tripped over the carpet
                     new Option { Text = "Inspect the carpet.",  OnChosen = () => LoadSituation("TODO: carpet minigame"),  Row = 1 },
+                    // the option to inspect the carpet needs to handle how to get a minigame TODO
                     new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
                 }
             },
