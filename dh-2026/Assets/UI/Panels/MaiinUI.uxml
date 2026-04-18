@@ -5,5 +5,40 @@
     xmlns:uie="UnityEditor.UIElements"
     xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
 >
-    
+    <ui:VisualElement name="Root" class="root">
+
+        <!-- GAMEPLAY PANEL (default visible) -->
+        <ui:VisualElement name="GameplayPanel" class="panel">
+            <ui:Label name="SituationText" class="situation-text" text="" />
+            <ui:VisualElement name="OptionsContainer" class="options-container" />
+        </ui:VisualElement>
+
+        <!-- FEEL AROUND PANEL (hidden by default) -->
+        <ui:VisualElement name="FeelAroundPanel" class="panel hidden">
+            <ui:Label name="FeelAroundPrompt" class="feel-around-prompt"
+                      text="Use your hands to feel what is in front of you." />
+            <ui:VisualElement name="RevealArea" class="reveal-area" />
+        </ui:VisualElement>
+
+        <!-- MEMORY PANEL (hidden by default) -->
+        <ui:VisualElement name="MemoryPanel" class="panel memory-panel hidden">
+            <ui:VisualElement name="MapSection" class="map-section">
+                <ui:Label text="MEMORY MAP" class="section-title" />
+                <ui:VisualElement name="MapContainer" class="map-container" />
+            </ui:VisualElement>
+            <ui:VisualElement name="JournalSection" class="journal-section">
+                <ui:Label text="MEMORIES" class="section-title" />
+                <ui:ScrollView name="JournalList" class="journal-list" />
+                <ui:VisualElement name="JournalDetail" class="journal-detail hidden" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- INTERACTION PANEL (hidden by default) -->
+        <ui:VisualElement name="InteractionPanel" class="panel hidden">
+            <ui:Label name="InteractionText" class="interaction-text" text="" />
+            <ui:VisualElement name="InteractionOptions" class="options-container" />
+            <ui:Label text="[ Q ]  Exit" class="quit-hint" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
 </ui:UXML>

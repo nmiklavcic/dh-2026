@@ -1,1 +1,164 @@
-VisualElement {}
+/* ── ROOT ── */
+.root {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0);
+}
+
+/* ── PANELS ── */
+.panel {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0);
+}
+
+.hidden {
+    display: none;
+}
+
+/* ── GAMEPLAY PANEL ── */
+.situation-text {
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    white-space: normal;
+    margin-top: 60px;
+    margin-left: 120px;
+    margin-right: 120px;
+    -unity-text-align: upper-left;
+}
+
+.options-container {
+    position: absolute;
+    bottom: 100px;
+    left: 120px;
+    right: 120px;
+}
+
+/* Option buttons — generated at runtime, styled here */
+.option-button {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    color: rgb(200, 200, 200);
+    font-size: 16px;
+    margin-top: 12px;
+    -unity-text-align: upper-left;
+    cursor: arrow;
+}
+
+.option-button:hover {
+    color: rgb(255, 255, 255);
+}
+
+/* ── FEEL AROUND PANEL ── */
+.feel-around-prompt {
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    -unity-text-align: upper-center;
+}
+
+.reveal-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ── MEMORY PANEL ── */
+.memory-panel {
+    flex-direction: row;
+}
+
+.map-section {
+    width: 50%;
+    height: 100%;
+    border-right-width: 1px;
+    border-right-color: rgb(60, 60, 60);
+    padding: 30px;
+    flex-direction: column;
+}
+
+.journal-section {
+    width: 50%;
+    height: 100%;
+    padding: 30px;
+    flex-direction: column;
+}
+
+.section-title {
+    color: rgb(150, 150, 150);
+    font-size: 12px;
+    -unity-text-align: upper-center;
+    margin-bottom: 24px;
+    letter-spacing: 4px;
+}
+
+.map-container {
+    flex-grow: 1;
+}
+
+.journal-list {
+    flex-grow: 1;
+}
+
+.journal-entry {
+    color: rgb(200, 200, 200);
+    font-size: 14px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(40, 40, 40);
+    cursor: arrow;
+}
+
+.journal-entry:hover {
+    color: rgb(255, 255, 255);
+}
+
+.journal-entry--placeholder {
+    color: rgb(100, 100, 100);
+    font-size: 14px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(40, 40, 40);
+}
+
+.journal-detail {
+    height: 35%;
+    border-top-width: 1px;
+    border-top-color: rgb(60, 60, 60);
+    padding-top: 16px;
+    flex-direction: column;
+}
+
+.journal-detail-text {
+    color: rgb(200, 200, 200);
+    font-size: 14px;
+    white-space: normal;
+}
+
+/* ── INTERACTION PANEL ── */
+.interaction-text {
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    white-space: normal;
+    margin-top: 60px;
+    margin-left: 120px;
+    margin-right: 120px;
+}
+
+.quit-hint {
+    color: rgb(80, 80, 80);
+    font-size: 12px;
+    position: absolute;
+    bottom: 24px;
+    right: 40px;
+}
