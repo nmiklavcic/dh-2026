@@ -82,7 +82,7 @@ public class DialogueManager : MonoBehaviour
                 Options = new List<Option>
                 {
                     new Option { Text = "Turn back.", OnChosen = () => LoadSituation("cabinet_start"), Row = 1 },
-                    new Option { Text = "Keep going.", OnChosem = () => LoadSituation("cabinet_door"), Row = 1},
+                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1},
                     new Option { Text = "Jump through the open window.",      OnChosen = () => LoadSituation("cabinet_window"), Row = 2},
                     // option to go through the middle if we decide you have that option
                     //new Option { Text = "",      OnChosen = () => LoadSituation("carpet-"), Row = 2}
@@ -168,15 +168,41 @@ public class DialogueManager : MonoBehaviour
 
         Debug.Log("LoadSituation called: " + id);
         StopAllCoroutines();
-        StartCoroutine(TypeText(situation.Description, ui));
+        StartCoroutine(TypeSituation(situation, ui));
 
+        ui.ShowGameplay();
+    }
+
+    private IEnumerator TypeSituation(Situation situation, UIManager ui)
+    {
+        float delay = 1f / TypeSpeed;
+
+        // Clear containers and hide them
         ui.OptionsContainerR1.Clear();
         ui.OptionsContainerR2.Clear();
+        ui.OptionsContainerR1.AddToClassList("hidden");
+        ui.OptionsContainerR2.AddToClassList("hidden");
 
+        // Type out the description
+        ui.SituationText.text = "";
+        foreach (char c in situation.Description)
+        {
+            ui.SituationText.text += c;
+            yield return new WaitForSeconds(delay);
+        }
+
+        // Small pause before options appear
+        yield return new WaitForSeconds(0.4f);
+
+        // Show containers
+        ui.OptionsContainerR1.RemoveFromClassList("hidden");
+        ui.OptionsContainerR2.RemoveFromClassList("hidden");
+
+        // Type out each option button one by one
         foreach (var option in situation.Options)
         {
             var btn = new Button();
-            btn.text = $"[ {option.Text} ]";
+            btn.text = "";
             btn.AddToClassList("option-button");
 
             var captured = option;
@@ -186,25 +212,16 @@ public class DialogueManager : MonoBehaviour
                 ui.OptionsContainerR2.Add(btn);
             else
                 ui.OptionsContainerR1.Add(btn);
+
+            string fullLabel = $"[ {option.Text} ]";
+            foreach (char c in fullLabel)
+            {
+                btn.text += c;
+                yield return new WaitForSeconds(delay);
+            }
+
+            // Small pause between options
+            yield return new WaitForSeconds(0.15f);
         }
-
-        ui.ShowGameplay();
-    }
-
-    private IEnumerator TypeText(string fullText, UIManager ui)
-    {
-        ui.SituationText.text = "";
-        ui.OptionsContainerR1.AddToClassList("hidden");
-        ui.OptionsContainerR2.AddToClassList("hidden");
-
-        float delay = 1f / TypeSpeed;
-        foreach (char c in fullText)
-        {
-            ui.SituationText.text += c;
-            yield return new WaitForSeconds(delay);
-        }
-
-        ui.OptionsContainerR1.RemoveFromClassList("hidden");
-        ui.OptionsContainerR2.RemoveFromClassList("hidden");
     }
 }
