@@ -1,44 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ui="UnityEngine.UIElements"
-    xmlns:uie="UnityEditor.UIElements"
-    xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
->
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Panels/MainStyle.uss?fileID=7433441132597879392&amp;guid=5f572149d0f8b13459bdf0ed0d4dda40&amp;type=3#MainStyle"/>
     <ui:VisualElement name="Root" class="root">
-
-        <!-- GAMEPLAY PANEL (default visible) -->
         <ui:VisualElement name="GameplayPanel" class="panel">
-            <ui:Label name="SituationText" class="situation-text" text="" />
-            <ui:VisualElement name="OptionsContainer" class="options-container" />
+            <ui:Label name="SituationText" text="" class="situation-text"/>
+            <ui:VisualElement name="OptionsContainer" class="options-container"/>
         </ui:VisualElement>
-
-        <!-- FEEL AROUND PANEL (hidden by default) -->
         <ui:VisualElement name="FeelAroundPanel" class="panel hidden">
-            <ui:Label name="FeelAroundPrompt" class="feel-around-prompt"
-                      text="Use your hands to feel what is in front of you." />
-            <ui:VisualElement name="RevealArea" class="reveal-area" />
+            <ui:Label name="FeelAroundPrompt" text="Use your hands to feel what is in front of you." class="feel-around-prompt"/>
+            <ui:VisualElement name="RevealArea" class="reveal-area"/>
         </ui:VisualElement>
-
-        <!-- MEMORY PANEL (hidden by default) -->
         <ui:VisualElement name="MemoryPanel" class="panel memory-panel hidden">
             <ui:VisualElement name="MapSection" class="map-section">
-                <ui:Label text="MEMORY MAP" class="section-title" />
-                <ui:VisualElement name="MapContainer" class="map-container" />
+                <ui:Label text="MEMORY MAP" class="section-title"/>
+                <ui:VisualElement name="MapContainer" class="map-container"/>
             </ui:VisualElement>
             <ui:VisualElement name="JournalSection" class="journal-section">
-                <ui:Label text="MEMORIES" class="section-title" />
-                <ui:ScrollView name="JournalList" class="journal-list" />
-                <ui:VisualElement name="JournalDetail" class="journal-detail hidden" />
+                <ui:Label text="MEMORIES" class="section-title"/>
+                <ui:ScrollView name="JournalList" class="journal-list"/>
+                <ui:VisualElement name="JournalDetail" class="journal-detail hidden"/>
             </ui:VisualElement>
         </ui:VisualElement>
-
-        <!-- INTERACTION PANEL (hidden by default) -->
         <ui:VisualElement name="InteractionPanel" class="panel hidden">
-            <ui:Label name="InteractionText" class="interaction-text" text="" />
-            <ui:VisualElement name="InteractionOptions" class="options-container" />
-            <ui:Label text="[ Q ]  Exit" class="quit-hint" />
+            <ui:Label name="InteractionText" text="" class="interaction-text"/>
+            <ui:VisualElement name="InteractionOptions" class="options-container"/>
+            <ui:Label text="[ Q ]  Exit" class="quit-hint"/>
         </ui:VisualElement>
-
     </ui:VisualElement>
 </ui:UXML>

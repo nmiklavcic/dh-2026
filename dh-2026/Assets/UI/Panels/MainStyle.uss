@@ -1,18 +1,14 @@
 /* ── ROOT ── */
 .root {
-    width: 100%;
-    height: 100%;
+    flex-grow: 1;
     background-color: rgb(0, 0, 0);
 }
 
 /* ── PANELS ── */
 .panel {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    flex-grow: 1;
     background-color: rgb(0, 0, 0);
+    flex-direction: column;
 }
 
 .hidden {
@@ -31,21 +27,22 @@
 }
 
 .options-container {
-    position: absolute;
-    bottom: 100px;
-    left: 120px;
-    right: 120px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: auto;
+    margin-left: 60px;
+    margin-right: 60px;
+    margin-bottom: 60px;
 }
 
-/* Option buttons — generated at runtime, styled here */
 .option-button {
     background-color: rgba(0, 0, 0, 0);
     border-width: 0;
     color: rgb(200, 200, 200);
     font-size: 16px;
-    margin-top: 12px;
+    margin-right: 32px;
     -unity-text-align: upper-left;
-    cursor: arrow;
+    padding: 0;
 }
 
 .option-button:hover {
@@ -56,19 +53,12 @@
 .feel-around-prompt {
     color: rgb(255, 255, 255);
     font-size: 16px;
-    position: absolute;
-    top: 40px;
-    left: 0;
-    right: 0;
+    margin-top: 40px;
     -unity-text-align: upper-center;
 }
 
 .reveal-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    flex-grow: 1;
 }
 
 /* ── MEMORY PANEL ── */
@@ -115,11 +105,6 @@
     padding-bottom: 8px;
     border-bottom-width: 1px;
     border-bottom-color: rgb(40, 40, 40);
-    cursor: arrow;
-}
-
-.journal-entry:hover {
-    color: rgb(255, 255, 255);
 }
 
 .journal-entry--placeholder {
@@ -158,7 +143,8 @@
 .quit-hint {
     color: rgb(80, 80, 80);
     font-size: 12px;
-    position: absolute;
-    bottom: 24px;
-    right: 40px;
+    margin-top: auto;
+    margin-bottom: 24px;
+    margin-right: 40px;
+    -unity-text-align: upper-right;
 }

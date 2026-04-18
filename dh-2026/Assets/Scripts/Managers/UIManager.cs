@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class UIManager : MonoBehaviour
@@ -31,24 +32,34 @@ public class UIManager : MonoBehaviour
         Instance = this;
 
         var root = uiDocument.rootVisualElement;
+        Debug.Log("UIManager Awake - root is: " + (root == null ? "NULL" : "OK"));
 
         _gameplayPanel    = root.Q("GameplayPanel");
         _feelAroundPanel  = root.Q("FeelAroundPanel");
         _memoryPanel      = root.Q("MemoryPanel");
         _interactionPanel = root.Q("InteractionPanel");
 
+        Debug.Log("GameplayPanel: " + (_gameplayPanel == null ? "NULL" : "OK"));
+        Debug.Log("FeelAroundPanel: " + (_feelAroundPanel == null ? "NULL" : "OK"));
+
         SituationText    = root.Q<Label>("SituationText");
         OptionsContainer = root.Q("OptionsContainer");
         InteractionText  = root.Q<Label>("InteractionText");
         InteractionOptions = root.Q("InteractionOptions");
+
+        Debug.Log("SituationText: " + (SituationText == null ? "NULL" : "OK"));
+        Debug.Log("OptionsContainer: " + (OptionsContainer == null ? "NULL" : "OK"));
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
+        if (keyboard.mKey.wasPressedThisFrame)
             ToggleMemory();
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (keyboard.qKey.wasPressedThisFrame)
             CloseInteraction();
     }
 
