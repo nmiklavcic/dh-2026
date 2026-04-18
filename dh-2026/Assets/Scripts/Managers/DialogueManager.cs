@@ -71,6 +71,8 @@ public class DialogueManager : MonoBehaviour
 
         _situations = new Dictionary<string, Situation>
         {
+            // ── Top  half ─────────────────────────────────────
+
             ["start"] = new Situation
             {
                 Description = () => "You wake up on a cold floor. The air is still. You have no idea where you are.",
@@ -270,6 +272,82 @@ public class DialogueManager : MonoBehaviour
                     new Option { Text = () => "Continue past it.",        OnChosen = () => LoadSituation("start")                 },
                 }
             },
+
+            // ── Bottom half ─────────────────────────────────────
+
+            ["study_door_inner"] = new Situation 
+            {
+                Description = () = hasFlag("study_start") ? "The air smells like books. You must be in the cabinet again." : "You feel the air has changed a bit. You are surrounded by a smell of books.",
+                Options = new List<Option>
+                {
+                    // the starting options you are met with when you wake up in the cabinet
+                    // trace left wall, trace right wall and go straight
+                    new Option { Text = () => "Trace your hand along the left wall.",  OnChosen = () => 
+                    {
+                        setFlag("study_door_inner");
+                        LoadSituation("study_scale");
+                    }, Row = 1},
+
+                    new Option { Text = () => "Trace your hand along the right wall.", OnChosen = () => 
+                    {
+                        setFlag("study_door_inner");
+                        LoadSituation("study_skeleton");
+                    }, Row = 1 },
+
+                    new Option { Text = "Stand up and walk forward.", OnChosen = () => LoadSituation("walk_forward_cabinet"), Row = 2 },
+                }
+            },
+
+            ["study_skeleton"]
+            {
+                Description = () = hasFlag("study_skeleton") ? "You stop at the skeleton." : "You hit something!",
+                Options = new List<Option>
+                {
+                    new Option { Text = () => "Turn back.",  OnChosen = () => 
+                    {
+                        setFlag("study_skeleton");
+                        LoadSituation("study_door_inner");
+                    }, Row = 1 },
+
+                    new Option { Text = () => hasFlag("study_skeleton") ? "Check skeleton." : "Check what you hit.",  OnChosen = () => 
+                    {
+                        setFlag("study_skeleton");
+                        // load minigame
+                        //LoadSituation("");
+                    }, Row = 1 },
+
+                    new Option { Text = () => "Keep tracing forward.",  OnChosen = () => 
+                    {
+                        LoadSituation("study_scale");
+                    }, Row = 2 },
+                }
+            } 
+
+            ["study_scale"] = new Situation
+            {
+                Description = () = hasFlag("study_scale") ? "You stop at the table." : "You hit something!",
+                Options = new List<Option>
+                {
+                    new Option { Text = () => "Turn back.",  OnChosen = () => 
+                    {
+                        setFlag("study_scale");
+                        LoadSituation("study_door_inner");
+                    }, Row = 1 },
+
+                    new Option { Text = () => hasFlag("study_scale") ? "Check table." : "Check what you hit.",  OnChosen = () => 
+                    {
+                        setFlag("study_scale");
+                        // load minigame
+                        //LoadSituation("");
+                    }, Row = 1 },
+
+                    new Option { Text = () => "Keep tracing forward.",  OnChosen = () => 
+                    {
+                        LoadSituation("study_door_inner");
+                    }, Row = 2 },
+                }
+            } 
+
         };
     }
 
