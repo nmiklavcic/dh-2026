@@ -243,7 +243,7 @@ public class DialogueManager : MonoBehaviour
                     if (hasFlag("cabinet_door_knob")) 
                     { 
                         list.Add
-                        (
+                        (  
                             new Option { Text = () => "Attach door knob and open the door.", OnChosen = () => 
                             { 
                                 setFlag("cabinet_door_open");
@@ -332,7 +332,7 @@ public class DialogueManager : MonoBehaviour
                     new Option { Text = () => "Go back.", OnChosen = () => 
                     {
                         setFlag("study_door_inner");
-                        LoadSituation("TODO: study door outer");
+                        LoadSituation("study_door_outer_open");
                     }, Row = 2 },
                 }
             },
@@ -618,6 +618,10 @@ public class DialogueManager : MonoBehaviour
                     }, Row = 2 },
                 }
             },
+
+            
+
+
 
         };
     }
