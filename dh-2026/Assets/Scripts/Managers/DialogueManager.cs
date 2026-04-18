@@ -377,7 +377,7 @@ public class DialogueManager : MonoBehaviour
             ["bathroom_door_inner"] = new Situation
             {
                 Description = () => hasFlag("bathroom_door_inner") ? "You smell fragrance in the air. You are in the bathroom again." : "The floor feels slippery and the room has a slight smell of fragrance.\nThis must be the bathroom.",
-                Options = new List<Option>
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
@@ -404,7 +404,7 @@ public class DialogueManager : MonoBehaviour
             ["bathroom_sink"] = new Situation
             {
                 Description = () => hasFlag("bathroom_sink") ? "You hit the sink again." : "You hit something!",
-                Options = new List<Option>
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
@@ -432,7 +432,7 @@ public class DialogueManager : MonoBehaviour
             ["bathroom_bath"] = new Situation
             {
                 Description = () => hasFlag("bathroom_bath") ? "You hit the bathtub again." : "You hit something with your foot! You check and it seems you found a bathtub.",
-                Options = new List<Option>
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
@@ -453,7 +453,7 @@ public class DialogueManager : MonoBehaviour
             ["bathroom_toilet"] = new Situation
             {
                 Description = () => hasFlag("bathroom_toilet") ? "You hit the toilet again. Ughhh..." : "You hit something! You check and it feels like a toilet. Yuck!",
-                Options = new List<Option>
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
@@ -474,7 +474,7 @@ public class DialogueManager : MonoBehaviour
             ["bedroom_door_inner"] = new Situation
             {
                 Description = () => hasFlag("bedroom_door_inner") ? "Bedroom again." : "This room feels warmer.",
-                Options = new List<Option>
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
@@ -501,7 +501,7 @@ public class DialogueManager : MonoBehaviour
             ["bedroom_closet"] = new Situation
             {
                 Description = () => hasFlag("bedroom_closet") ? "You hit the closet again." : "You hit something!",
-                Options = new List<Option>
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
@@ -522,7 +522,7 @@ public class DialogueManager : MonoBehaviour
             ["bedroom_nightstand_1"] = new Situation
             {
                 Description = () => hasFlag("bedroom_nightstand_1") ? "You hit the nightstand again." : "You hit something! It feels like a small drawer.",
-                Options = new List<Option>
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
@@ -543,7 +543,7 @@ public class DialogueManager : MonoBehaviour
             ["bedroom_nightstand_2"] = new Situation
             {
                 Description = () => hasFlag("bedroom_nightstand_2") ? "You hit the nightstand again." : "You hit something! It feels like a small drawer.",
-                Options = new List<Option>
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
@@ -564,17 +564,17 @@ public class DialogueManager : MonoBehaviour
             ["bedroom_bed"] = new Situation
             {
                 Description = () => hasFlag("bedroom_bed") ? "You hit the bed again." : "You hit something!",
-                Options = new List<Option>
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
-                    new Option { Text = () => "Trace foward.",  OnChosen = () => 
+                    new Option { Text = () => "Trace your hand to the left.",  OnChosen = () => 
                     {
                         setFlag("bedroom_bed");
                         LoadSituation("bedroom_nightstand_1");
                     }, Row = 1},
 
-                    new Option { Text = () => "Go back.",  OnChosen = () => 
+                    new Option { Text = () => "Trace your hand to the right.", OnChosen = () => 
                     {
                         setFlag("bedroom_bed");
                         LoadSituation("bedroom_nightstand_2");
@@ -585,6 +585,12 @@ public class DialogueManager : MonoBehaviour
                         setFlag("bedroom_bed");
                         // load minigame
                         //LoadSituation("");
+                    }, Row = 2 },
+
+                    new Option { Text = () => "Go back.",  OnChosen = () => 
+                    {
+                        setFlag("bedroom_bed");
+                        LoadSituation("bedroom_door_inner");
                     }, Row = 2 },
                 }
             },
