@@ -16,7 +16,7 @@ public class DialogueManager : MonoBehaviour
 
     public void setFlag(string flag) => _flags.Add(flag);
     
-    public bool hasFlag(string flag) => _flags.Contain(flag);
+    public bool hasFlag(string flag) => _flags.Contains(flag);
 
     // how to set flag
     // Change option to :
@@ -42,8 +42,8 @@ public class DialogueManager : MonoBehaviour
 
     public class Situation
     {
-        public string Description;
-        public List<Option> Options;
+         public Func<string> Description;
+        public List<Option> Options; 
     }
 
     // Characters per second — tweak this to change typing speed
@@ -62,68 +62,93 @@ public class DialogueManager : MonoBehaviour
         {
             ["start"] = new Situation
             {
-                Description = "You wake up on a cold floor. The air is still. You have no idea where you are.",
+                Description = () => "You wake up on a cold floor. The air is still. You have no idea where you are.",
                 Options = new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // One option to get user familiar with the gameplay
-                    new Option { Text = "Get up.",  OnChosen = () => LoadSituation("go_cabinet_start"),  Row = 1 }
+                    new Option { Text = "Get up.",  OnChosen = () => LoadSituation("cabinet_start"),  Row = 1 }
                 }
             },
 
-            ["go_cabinet_start"] = new Situation
-            {
-                Description = "You get up wondering how you got here in the first place IDK spremen pol.",
-                Options = new List<Option>
-                {
-                    // the starting options you are met with when you wake up in the cabinet
-                    // trace left wall, trace right wall and go straight
-                    new Option { Text = "Trace your hand along the left wall.",  OnChosen = () => LoadSituation("trace_left_cabinet"),  Row = 1 },
-                    new Option { Text = "Trace your hand along the right wall.", OnChosen = () => LoadSituation("trace_right_cabinet"), Row = 1 },
-                    new Option { Text = "Stand up and walk forward.",            OnChosen = () => LoadSituation("walk_forward_cabinet"), Row = 2 },
-                }
-            },
-
-            
             ["cabinet_start"] = new Situation
             {
-                // option if user ends up back at the start
-                Description = "",
+                Description = () => hasFlag("cabinet_start") ? "{Insert text for visited}" : "You get up wondering how you got here in the first place IDK spremen pol.",
                 Options = new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
-                    new Option { Text = "Trace your hand along the left wall.",  OnChosen = () => LoadSituation("trace_left_cabinet"),  Row = 1 },
-                    new Option { Text = "Trace your hand along the right wall.", OnChosen = () => LoadSituation("trace_right_cabinet"), Row = 1 },
-                    new Option { Text = "Walk forward.",            OnChosen = () => LoadSituation("walk_forward_cabinet"), Row = 2 },
+                    new Option { Text = "Trace your hand along the left wall.",  OnChosen = () => 
+                    {
+                        setFlag("cabinet_start");
+                        LoadSituation("cabinet_window");
+                    }, Row = 1},
+                    new Option { Text = "Trace your hand along the right wall.", OnChosen = () => 
+                    {
+                        setFlag("cabinet_start");
+                        LoadSituation("cabinet_table");
+                    }, Row = 1 },
+                    new Option { Text = "Walk forward, into the unknown.", OnChosen = () => 
+                    {
+                        setFlag("cabinet_start");
+                        LoadSituation("walk_forward_cabinet"); 
+                    }, Row = 2 },
                 }
             },
 
-            ["trace_left_cabinet"] = new Situation
+            // Cabinet table options  
+            ["cabinet_table"] = new Situation
             {
-                // Options for when you 
-                Description = "Your fingertips find the wall. It is cold and smooth — painted plaster. You move slowly along it letting your left hand guide you.\n{INSERT TEXT ZA OKNO}",
+                // option if user ends up back at the start
+                Description = () => hasFlag("cabinet_table") ? "You stop befor the table" : "You hit something!",
                 Options = new List<Option>
                 {
-                    new Option { Text = "Turn back.", OnChosen = () => LoadSituation("cabinet_start"), Row = 1 },
-                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door_inside"), Row = 1},
-                    new Option { Text = "Jump through the open window.",      OnChosen = () => LoadSituation("cabinet_window"), Row = 2},
-                    // option to go through the middle if we decide you have that option
-                    //new Option { Text = "",      OnChosen = () => LoadSituation("carpet-"), Row = 2}
+                    // the starting options you are met with when you wake up in the cabinet
+                    // trace left wall, trace right wall and go straight
+                    new Option { Text = ".",  OnChosen = () => 
+                    {
+                        setFlag("cabinet_");
+                        LoadSituation("cabinet_window");
+                    }, Row = 1 },
+                    new Option { Text = "Turn back.",  OnChosen = () => 
+                    {
+                        setFlag("cabinet_table");
+                        LoadSituation("cabinet_start");
+                    }, Row = 1 },
+                    new Option { Text = hasFlag("cabinet_table") ? "Check table" : "Check what you hit.",  OnChosen = () => 
+                    {
+                        setFlag("cabinet_table");
+                        // load minigame
+                        //LoadSituation("");
+                    }, Row = 2 },
                 }
             },
 
             ["cabinet_window"] = new Situation
             {
+                // Options for when you 
+                Description = () => hasFlag("cabinet_window_visited") ? "Text for when you return to the window" : "Your fingertips find the wall. It is cold and smooth — painted plaster. You move slowly along it letting your left hand guide you.\n{INSERT TEXT ZA OKNO}",
+                Options = new List<Option>
+                {
+                    new Option { Text = "Turn back.", OnChosen = () => LoadSituation("cabinet_start"), Row = 1 },
+                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door_inside"), Row = 1},
+                    new Option { Text = "Jump through the open window.",      OnChosen = () => LoadSituation("cabinet_window_interact"), Row = 2},
+                    // option to go through the middle if we decide you have that option
+                    //new Option { Text = "",      OnChosen = () => LoadSituation("carpet-"), Row = 2}
+                }
+            },
+
+            ["cabinet_window_interact"] = new Situation
+            {
                 // Game over screen 
-                Description = "As you feel the cold air on your skin, it reminds you of freedom. Not wanting to be bound to an unknown place you jump. ",
+                Description = () => "As you feel the cold air on your skin, it reminds you of freedom. Not wanting to be bound to an unknown place you jump. ",
                 // Load game over screen and return to menu
             },
 
             ["cabinet_door_inside"] = new Situation
             {
-                // Options for the cabinet door inside
-                Description = "You feel the wooden frame of a door.\nHuzzah! A way out!",
+                // Options for the cabinet door inside  
+                Description = () => "You feel the wooden frame of a door.\nHuzzah! A way out!",
                 Options = new List<Option>
                 {
                     new Option { Text = "Feel around", OnChosen= () => LoadSituation(""), Row = 1},
@@ -132,7 +157,7 @@ public class DialogueManager : MonoBehaviour
 
             ["carpet_1"] = new Situation
             {
-                Description = "You trip over.",
+                Description = () => "You trip over.",
                 Options = new List<Option>
                 {
                     // the options for when you hit the carpet the first time
@@ -144,7 +169,7 @@ public class DialogueManager : MonoBehaviour
 
             ["carpet_check"] = new Situation
             {
-                Description = "You can feel a rough fabric under your fingers. You come to the conclusion that you tripped over a carpet.",
+                Description = () => "You can feel a rough fabric under your fingers. You come to the conclusion that you tripped over a carpet.",
                 Options = new List<Option>
                 {
                     // the options for when you hit the carpet the first time
@@ -155,7 +180,7 @@ public class DialogueManager : MonoBehaviour
 
             ["carpet_2"] = new Situation
             {
-                Description = "You are standing on a carpet.",
+                Description = () => "You are standing on a carpet.",
                 Options = new List<Option>
                 {
                     // the options for when you've already tripped over the carpet
@@ -167,7 +192,7 @@ public class DialogueManager : MonoBehaviour
 
             ["trace_right_cabinet"] = new Situation
             {
-                Description = "The right wall feels the same — cold, smooth. A faint draft touches your wrist.",
+                Description = () => "The right wall feels the same — cold, smooth. A faint draft touches your wrist.",
                 Options = new List<Option>
                 {
                     new Option { Text = "Keep tracing forward.", OnChosen = () => LoadSituation("start") },
@@ -177,7 +202,7 @@ public class DialogueManager : MonoBehaviour
 
             ["walk_forward"] = new Situation
             {
-                Description = "You take three steps. Your shin connects with something solid. A dull thunk echoes in the room.",
+                Description = () => "You take three steps. Your shin connects with something solid. A dull thunk echoes in the room.",
                 Options = new List<Option>
                 {
                     new Option { Text = "Check what you hit.",      OnChosen = () => Debug.Log("TODO: trigger Feel Around") },
@@ -219,7 +244,7 @@ public class DialogueManager : MonoBehaviour
 
         // Type out the description
         ui.SituationText.text = "";
-        foreach (char c in situation.Description)
+        foreach (char c in situation.Description())
         {
             ui.SituationText.text += c;
             yield return new WaitForSeconds(delay);
