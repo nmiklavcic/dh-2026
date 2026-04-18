@@ -82,7 +82,7 @@ public class DialogueManager : MonoBehaviour
                 Options = new List<Option>
                 {
                     new Option { Text = "Turn back.", OnChosen = () => LoadSituation("cabinet_start"), Row = 1 },
-                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1},
+                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door_inside"), Row = 1},
                     new Option { Text = "Jump through the open window.",      OnChosen = () => LoadSituation("cabinet_window"), Row = 2},
                     // option to go through the middle if we decide you have that option
                     //new Option { Text = "",      OnChosen = () => LoadSituation("carpet-"), Row = 2}
@@ -91,17 +91,18 @@ public class DialogueManager : MonoBehaviour
 
             ["cabinet_window"] = new Situation
             {
+                // Game over screen 
                 Description = "As you feel the cold air on your skin, it reminds you of freedom. Not wanting to be bound to an unknown place you jump. ",
                 // Load game over screen and return to menu
-                
             },
 
-            ["cabinet_door"] = new Situation
+            ["cabinet_door_inside"] = new Situation
             {
-                Description = "",
+                // Options for the cabinet door inside
+                Description = "You feel the wooden frame of a door.\nHuzzah! A way out!",
                 Options = new List<Option>
                 {
-                    new Option { Text = "", OnChosen= () => LoadSituation(""), Row = 1},
+                    new Option { Text = "Feel around", OnChosen= () => LoadSituation(""), Row = 1},
                 }
             },
             
