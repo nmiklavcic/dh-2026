@@ -7,16 +7,6 @@ public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance { get; private set; }
 
-    void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-    }
-
     // ── Data structures ──────────────────────────────────────
 
     public class Option
@@ -35,8 +25,11 @@ public class DialogueManager : MonoBehaviour
 
     private Dictionary<string, Situation> _situations;
 
-    void Start()
+    void Awake()
     {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
+
         _situations = new Dictionary<string, Situation>
         {
             ["start"] = new Situation
@@ -95,6 +88,7 @@ public class DialogueManager : MonoBehaviour
 
         var ui = UIManager.Instance;
 
+        Debug.Log("LoadSituation called: " + id);
         ui.SituationText.text = situation.Description;
 
         ui.OptionsContainer.Clear();
@@ -102,7 +96,7 @@ public class DialogueManager : MonoBehaviour
         foreach (var option in situation.Options)
         {
             var btn = new Button();
-            btn.text = option.Text;
+            btn.text = $"[ {option.Text} ]";
             btn.AddToClassList("option-button");
 
             var captured = option;
