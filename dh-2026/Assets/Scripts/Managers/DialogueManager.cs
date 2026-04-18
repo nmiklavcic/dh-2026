@@ -20,7 +20,7 @@ public class DialogueManager : MonoBehaviour
 
     // how to set flag
     // Change option to :
-    // new Option { Text = "...", OnChosen = () => 
+    // new Option { Text = () => "...", OnChosen = () => 
     // {
     //     SetFlag("...");
     //     LoadSituation("...");
@@ -29,20 +29,20 @@ public class DialogueManager : MonoBehaviour
 
     // how to check flag and choose between two options :
     // Change option that has differing situations
-    // new Option { Text = "...", OnChosen = () => LoadSituation(HasFlag("carpet_seen") ? "carpet_2" : "carpet_1"), Row = 2 }
+    // new Option { Text = () => "...", OnChosen = () => LoadSituation(HasFlag("carpet_seen") ? "carpet_2" : "carpet_1"), Row = 2 }
 
 
 
     public class Option
     {
-        public string Text;
+        public Func<string> Text;
         public Action OnChosen;
         public int Row = 1; // 1 = top row, 2 = bottom row
     }
 
     public class Situation
     {
-         public Func<string> Description;
+        public Func<string> Description;
         public List<Option> Options; 
     }
 
@@ -67,7 +67,7 @@ public class DialogueManager : MonoBehaviour
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // One option to get user familiar with the gameplay
-                    new Option { Text = "Get up.",  OnChosen = () => LoadSituation("cabinet_start"),  Row = 1 }
+                    new Option { Text = () => "Get up.",  OnChosen = () => LoadSituation("cabinet_start"),  Row = 1 }
                 }
             },
 
@@ -78,17 +78,17 @@ public class DialogueManager : MonoBehaviour
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
-                    new Option { Text = "Trace your hand along the left wall.",  OnChosen = () => 
+                    new Option { Text = () => "Trace your hand along the left wall.",  OnChosen = () => 
                     {
                         setFlag("cabinet_start");
                         LoadSituation("cabinet_window");
                     }, Row = 1},
-                    new Option { Text = "Trace your hand along the right wall.", OnChosen = () => 
+                    new Option { Text = () => "Trace your hand along the right wall.", OnChosen = () => 
                     {
                         setFlag("cabinet_start");
                         LoadSituation("cabinet_table");
                     }, Row = 1 },
-                    new Option { Text = "Walk forward, into the unknown.", OnChosen = () => 
+                    new Option { Text = () => "Walk forward, into the unknown.", OnChosen = () => 
                     {
                         setFlag("cabinet_start");
                         LoadSituation("walk_forward_cabinet"); 
@@ -100,22 +100,22 @@ public class DialogueManager : MonoBehaviour
             ["cabinet_table"] = new Situation
             {
                 // option if user ends up back at the start
-                Description = () => hasFlag("cabinet_table") ? "You stop befor the table" : "You hit something!",
+                Description = () => hasFlag("cabinet_table") ? "You stop befor the cabinet table." : "You hit something!",
                 Options = new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
-                    new Option { Text = ".",  OnChosen = () => 
+                    new Option { Text = () => ".",  OnChosen = () => 
                     {
                         setFlag("cabinet_");
                         LoadSituation("cabinet_window");
                     }, Row = 1 },
-                    new Option { Text = "Turn back.",  OnChosen = () => 
+                    new Option { Text = () => "Turn back.",  OnChosen = () => 
                     {
                         setFlag("cabinet_table");
                         LoadSituation("cabinet_start");
                     }, Row = 1 },
-                    new Option { Text = hasFlag("cabinet_table") ? "Check table" : "Check what you hit.",  OnChosen = () => 
+                    new Option { Text = () => hasFlag("cabinet_table") ? "Check table." : "Check what you hit.",  OnChosen = () => 
                     {
                         setFlag("cabinet_table");
                         // load minigame
@@ -130,11 +130,11 @@ public class DialogueManager : MonoBehaviour
                 Description = () => hasFlag("cabinet_window_visited") ? "Text for when you return to the window" : "Your fingertips find the wall. It is cold and smooth — painted plaster. You move slowly along it letting your left hand guide you.\n{INSERT TEXT ZA OKNO}",
                 Options = new List<Option>
                 {
-                    new Option { Text = "Turn back.", OnChosen = () => LoadSituation("cabinet_start"), Row = 1 },
-                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door_inside"), Row = 1},
-                    new Option { Text = "Jump through the open window.",      OnChosen = () => LoadSituation("cabinet_window_interact"), Row = 2},
+                    new Option { Text = () => "Turn back.", OnChosen = () => LoadSituation("cabinet_start"), Row = 1 },
+                    new Option { Text = () => "Keep going.", OnChosen = () => LoadSituation("cabinet_door_inside"), Row = 1},
+                    new Option { Text = () => "Jump through the open window.",      OnChosen = () => LoadSituation("cabinet_window_interact"), Row = 2},
                     // option to go through the middle if we decide you have that option
-                    //new Option { Text = "",      OnChosen = () => LoadSituation("carpet-"), Row = 2}
+                    //new Option { Text = () => "",      OnChosen = () => LoadSituation("carpet-"), Row = 2}
                 }
             },
 
@@ -151,7 +151,7 @@ public class DialogueManager : MonoBehaviour
                 Description = () => "You feel the wooden frame of a door.\nHuzzah! A way out!",
                 Options = new List<Option>
                 {
-                    new Option { Text = "Feel around", OnChosen= () => LoadSituation(""), Row = 1},
+                    new Option { Text = () => "Feel around", OnChosen= () => LoadSituation(""), Row = 1},
                 }
             },
 
@@ -162,8 +162,8 @@ public class DialogueManager : MonoBehaviour
                 {
                     // the options for when you hit the carpet the first time
                     // trace left wall, trace right wall and go straight
-                    new Option { Text = "Check what you tripped over.",  OnChosen = () => LoadSituation("carpet_check"),  Row = 1 },
-                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
+                    new Option { Text = () => "Check what you tripped over.",  OnChosen = () => LoadSituation("carpet_check"),  Row = 1 },
+                    new Option { Text = () => "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
                 }
             },
 
@@ -173,8 +173,8 @@ public class DialogueManager : MonoBehaviour
                 Options = new List<Option>
                 {
                     // the options for when you hit the carpet the first time
-                    new Option { Text = "Inspect the carpet.",  OnChosen = () => LoadSituation("TODO: carpet minigame"),  Row = 1 },
-                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
+                    new Option { Text = () => "Inspect the carpet.",  OnChosen = () => LoadSituation("TODO: carpet minigame"),  Row = 1 },
+                    new Option { Text = () => "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
                 }
             },
 
@@ -184,9 +184,9 @@ public class DialogueManager : MonoBehaviour
                 Options = new List<Option>
                 {
                     // the options for when you've already tripped over the carpet
-                    new Option { Text = "Inspect the carpet.",  OnChosen = () => LoadSituation("TODO: carpet minigame"),  Row = 1 },
+                    new Option { Text = () => "Inspect the carpet.",  OnChosen = () => LoadSituation("TODO: carpet minigame"),  Row = 1 },
                     // the option to inspect the carpet needs to handle how to get a minigame TODO
-                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
+                    new Option { Text = () => "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
                 }
             },
 
@@ -195,8 +195,8 @@ public class DialogueManager : MonoBehaviour
                 Description = () => "The right wall feels the same — cold, smooth. A faint draft touches your wrist.",
                 Options = new List<Option>
                 {
-                    new Option { Text = "Keep tracing forward.", OnChosen = () => LoadSituation("start") },
-                    new Option { Text = "Stop and listen.",      OnChosen = () => LoadSituation("start") },
+                    new Option { Text = () => "Keep tracing forward.", OnChosen = () => LoadSituation("start") },
+                    new Option { Text = () => "Stop and listen.",      OnChosen = () => LoadSituation("start") },
                 }
             },
 
@@ -205,9 +205,9 @@ public class DialogueManager : MonoBehaviour
                 Description = () => "You take three steps. Your shin connects with something solid. A dull thunk echoes in the room.",
                 Options = new List<Option>
                 {
-                    new Option { Text = "Check what you hit.",      OnChosen = () => Debug.Log("TODO: trigger Feel Around") },
-                    new Option { Text = "Go back.",                 OnChosen = () => LoadSituation("start")                 },
-                    new Option { Text = "Continue past it.",        OnChosen = () => LoadSituation("start")                 },
+                    new Option { Text = () => "Check what you hit.",      OnChosen = () => Debug.Log("TODO: trigger Feel Around") },
+                    new Option { Text = () => "Go back.",                 OnChosen = () => LoadSituation("start")                 },
+                    new Option { Text = () => "Continue past it.",        OnChosen = () => LoadSituation("start")                 },
                 }
             },
         };
@@ -272,7 +272,7 @@ public class DialogueManager : MonoBehaviour
             else
                 ui.OptionsContainerR1.Add(btn);
 
-            string fullLabel = $"[ {option.Text} ]";
+            string fullLabel = $"[ {option.Text()} ]";
             foreach (char c in fullLabel)
             {
                 btn.text += c;
