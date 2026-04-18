@@ -16,7 +16,8 @@ public class UIManager : MonoBehaviour
 
     // Gameplay elements
     public Label SituationText { get; private set; }
-    public VisualElement OptionsContainer { get; private set; }
+    public VisualElement OptionsContainerR1 { get; private set; }
+    public VisualElement OptionsContainerR2 { get; private set; }
 
     // Interaction elements
     public Label InteractionText { get; private set; }
@@ -42,13 +43,15 @@ public class UIManager : MonoBehaviour
         Debug.Log("GameplayPanel: " + (_gameplayPanel == null ? "NULL" : "OK"));
         Debug.Log("FeelAroundPanel: " + (_feelAroundPanel == null ? "NULL" : "OK"));
 
-        SituationText    = root.Q<Label>("SituationText");
-        OptionsContainer = root.Q("OptionsContainer");
-        InteractionText  = root.Q<Label>("InteractionText");
+        SituationText      = root.Q<Label>("SituationText");
+        OptionsContainerR1 = root.Q("OptionsContainerR1");
+        OptionsContainerR2 = root.Q("OptionsContainerR2");
+        InteractionText    = root.Q<Label>("InteractionText");
         InteractionOptions = root.Q("InteractionOptions");
 
         Debug.Log("SituationText: " + (SituationText == null ? "NULL" : "OK"));
-        Debug.Log("OptionsContainer: " + (OptionsContainer == null ? "NULL" : "OK"));
+        Debug.Log("OptionsContainerR1: " + (OptionsContainerR1 == null ? "NULL" : "OK"));
+        Debug.Log("OptionsContainerR2: " + (OptionsContainerR2 == null ? "NULL" : "OK"));
     }
 
     void Update()

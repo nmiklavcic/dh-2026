@@ -26,12 +26,16 @@
     -unity-text-align: upper-left;
 }
 
-.options-container {
+.options-container-r1 {
     flex-direction: row;
-    flex-wrap: wrap;
+    justify-content: center;
     margin-top: auto;
-    margin-left: 60px;
-    margin-right: 60px;
+    margin-bottom: 8px;
+}
+
+.options-container-r2 {
+    flex-direction: row;
+    justify-content: center;
     margin-bottom: 60px;
 }
 
@@ -40,8 +44,9 @@
     border-width: 0;
     color: rgb(200, 200, 200);
     font-size: 16px;
-    margin-right: 32px;
-    -unity-text-align: upper-left;
+    margin-left: 24px;
+    margin-right: 24px;
+    -unity-text-align: upper-center;
     padding: 0;
 }
 
