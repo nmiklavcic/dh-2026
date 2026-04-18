@@ -592,13 +592,13 @@ public class DialogueManager : MonoBehaviour
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
-                    new Option { Text = () => "Trace foward.",  OnChosen = () => 
+                    new Option { Text = () => "Trace your hand to the left.",  OnChosen = () => 
                     {
                         setFlag("bedroom_bed");
                         LoadSituation("bedroom_nightstand_1");
                     }, Row = 1},
 
-                    new Option { Text = () => "Go back.",  OnChosen = () => 
+                    new Option { Text = () => "Trace your hand to the right.", OnChosen = () => 
                     {
                         setFlag("bedroom_bed");
                         LoadSituation("bedroom_nightstand_2");
@@ -609,6 +609,12 @@ public class DialogueManager : MonoBehaviour
                         setFlag("bedroom_bed");
                         // load minigame
                         //LoadSituation("");
+                    }, Row = 2 },
+
+                    new Option { Text = () => "Go back.",  OnChosen = () => 
+                    {
+                        setFlag("bedroom_bed");
+                        LoadSituation("bedroom_door_inner");
                     }, Row = 2 },
                 }
             },
