@@ -277,8 +277,8 @@ public class DialogueManager : MonoBehaviour
 
             ["study_door_inner"] = new Situation 
             {
-                Description = () = hasFlag("study_start") ? "The air smells like books. You must be in the cabinet again." : "You feel the air has changed a bit. You are surrounded by a smell of books.",
-                Options = new List<Option>
+                Description = () => hasFlag("study_start") ? "The air smells like books. You must be in the cabinet again." : "You feel the air has changed a bit. You are surrounded by a smell of books.",
+                Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // trace left wall, trace right wall and go straight
@@ -300,8 +300,8 @@ public class DialogueManager : MonoBehaviour
 
             ["study_skeleton"]
             {
-                Description = () = hasFlag("study_skeleton") ? "You stop at the skeleton." : "You hit something!",
-                Options = new List<Option>
+                Description = () => hasFlag("study_skeleton") ? "You stop at the skeleton." : "You hit something!",
+                Options = () => new List<Option>
                 {
                     new Option { Text = () => "Turn back.",  OnChosen = () => 
                     {
@@ -321,12 +321,12 @@ public class DialogueManager : MonoBehaviour
                         LoadSituation("study_scale");
                     }, Row = 2 },
                 }
-            } 
+            },
 
             ["study_scale"] = new Situation
             {
-                Description = () = hasFlag("study_scale") ? "You stop at the table." : "You hit something!",
-                Options = new List<Option>
+                Description = () => hasFlag("study_scale") ? "You stop at the table." : "You hit something!",
+                Options = () => new List<Option>
                 {
                     new Option { Text = () => "Turn back.",  OnChosen = () => 
                     {
