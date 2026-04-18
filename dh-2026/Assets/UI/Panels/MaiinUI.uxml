@@ -3,7 +3,8 @@
     <ui:VisualElement name="Root" class="root">
         <ui:VisualElement name="GameplayPanel" class="panel">
             <ui:Label name="SituationText" text="" class="situation-text"/>
-            <ui:VisualElement name="OptionsContainer" class="options-container"/>
+            <ui:VisualElement name="OptionsContainerR1" class="options-container-r1"/>
+            <ui:VisualElement name="OptionsContainerR2" class="options-container-r2"/>
         </ui:VisualElement>
         <ui:VisualElement name="FeelAroundPanel" class="panel hidden">
             <ui:Label name="FeelAroundPrompt" text="Use your hands to feel what is in front of you." class="feel-around-prompt"/>
