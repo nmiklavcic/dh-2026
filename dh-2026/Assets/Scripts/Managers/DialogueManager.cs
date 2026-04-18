@@ -120,7 +120,7 @@ public class DialogueManager : MonoBehaviour
                     // trace left wall, trace right wall and go straight
                     new Option { Text = () => "Keep going.",  OnChosen = () => 
                     {
-                        setFlag("cabinet_");
+                        setFlag("cabinet_table");
                         LoadSituation("cabinet_door");
                     }, Row = 1 },
                     new Option { Text = () => "Turn back.",  OnChosen = () => 
@@ -168,6 +168,11 @@ public class DialogueManager : MonoBehaviour
                 // Game over screen 
                 Description = () => "As you feel the cold air on your skin, it reminds you of freedom. Not wanting to be bound to an unknown place you jump. ",
                 // Load game over screen and return to menu
+                Options = () => new List<Option>
+                {
+                    new Option { Text = () => "Start over.", OnChosen = () => LoadSituation("start"), Row = 1 },
+                    new Option { Text = () => "Return to menu.", OnChosen = () => Debug.Log("TODO: load main menu"), Row = 1 },
+                }
             },
 
             ["cabinet_door_outer"] = new Situation
@@ -192,28 +197,38 @@ public class DialogueManager : MonoBehaviour
                         return "You feel the wooden frame of a door.\nHuzzah!\nA way out of this awfull room!\nAs you feel around and as you do disaster stikes!\nThe door is missing a doorknob.";
                     }
                 },
-                Options = () => new List<Option>
-                {
-                    new Option { Text = () => "", OnChosen= () => 
+                Options = () =>
+                { 
+                    var list = new List<Option>
                     {
-                        setFlag("cabinet_door_outer");
-                        LoadSituation("");
-                    }, Row = 1},
-                    new Option { Text = () => "", OnChosen= () =>
-                    {
-                        setFlag("cabinet_door_outer");
-                        LoadSituation("");
-                    },Row = 1 },
-                    new Option { Text = () => "", OnChosen= () =>
-                    {
-                        setFlag("cabinet_door_outer");
-                        LoadSituation("");
-                    },Row = 2 },
-                    new Option { Text = () => "", OnChosen= () =>
-                    {
-                        setFlag("cabinet_door_outer");
-                        LoadSituation("");
-                    },Row = 2 },
+                        new Option { Text = () => "Trace your way back along the left wall.", OnChosen= () => 
+                        {
+                            setFlag("cabinet_door_outer");
+                            LoadSituation("cabinet_window");
+                        }, Row = 1},
+                        new Option { Text = () => "Trace your way back along the right wall.", OnChosen= () =>
+                        {
+                            setFlag("cabinet_door_outer");
+                            LoadSituation("cabinet_table");
+                        },Row = 1 },
+                        new Option { Text = () => "", OnChosen= () =>
+                        {
+                            setFlag("cabinet_door_outer");
+                            LoadSituation("");
+                        },Row = 2 },
+                        new Option { Text = () => "", OnChosen= () =>
+                        {
+                            setFlag("cabinet_door_outer");
+                            LoadSituation("");
+                        },Row = 2 },
+                        new Option { Text = () => "", OnChosen= () =>
+                        {
+                            setFlag("cabinet_door_outer");
+                            LoadSituation("");
+                        },Row = 2 }
+                    };
+
+                    return list;
                 }
             },
 
@@ -294,11 +309,11 @@ public class DialogueManager : MonoBehaviour
                         LoadSituation("study_skeleton");
                     }, Row = 1 },
 
-                    new Option { Text = "Stand up and walk forward.", OnChosen = () => LoadSituation("walk_forward_cabinet"), Row = 2 },
+                    new Option { Text = () => "Stand up and walk forward.", OnChosen = () => LoadSituation("walk_forward_cabinet"), Row = 2 },
                 }
             },
 
-            ["study_skeleton"]
+            ["study_skeleton"] = new Situation
             {
                 Description = () => hasFlag("study_skeleton") ? "You stop at the skeleton." : "You hit something!",
                 Options = () => new List<Option>
