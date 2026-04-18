@@ -105,34 +105,42 @@ public class DialogueManager : MonoBehaviour
                     new Option { Text = "Feel around", OnChosen= () => LoadSituation(""), Row = 1},
                 }
             },
-            
+
             ["carpet_1"] = new Situation
             {
-                Description = "You wake up on a cold floor. The air is still. You have no idea where you are.",
+                Description = "You trip over.",
                 Options = new List<Option>
                 {
-                    // the starting options you are met with when you wake up in the cabinet
+                    // the options for when you hit the carpet the first time
                     // trace left wall, trace right wall and go straight
-                    new Option { Text = "Trace your hand along the left wall.",  OnChosen = () => LoadSituation("trace_left_cabinet"),  Row = 1 },
-                    new Option { Text = "Trace your hand along the right wall.", OnChosen = () => LoadSituation("trace_right_cabinet"), Row = 1 },
-                    new Option { Text = "Stand up and walk forward.",            OnChosen = () => LoadSituation("walk_forward_cabinet"), Row = 2 },
+                    new Option { Text = "Check what you tripped over.",  OnChosen = () => LoadSituation("carpet_check"),  Row = 1 },
+                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
+                }
+            },
+
+            ["carpet_check"] = new Situation
+            {
+                Description = "You can feel a rough fabric under your fingers. You come to the conclusion that you tripped over a carpet.",
+                Options = new List<Option>
+                {
+                    // the options for when you hit the carpet the first time
+                    new Option { Text = "Inspect the carpet.",  OnChosen = () => LoadSituation("TODO: carpet minigame"),  Row = 1 },
+                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
                 }
             },
 
             ["carpet_2"] = new Situation
             {
-                Description = "You wake up on a cold floor. The air is still. You have no idea where you are.",
+                Description = "You are standing on a carpet.",
                 Options = new List<Option>
                 {
-                    // the starting options you are met with when you wake up in the cabinet
-                    // trace left wall, trace right wall and go straight
-                    new Option { Text = "Trace your hand along the left wall.",  OnChosen = () => LoadSituation("trace_left_cabinet"),  Row = 1 },
-                    new Option { Text = "Trace your hand along the right wall.", OnChosen = () => LoadSituation("trace_right_cabinet"), Row = 1 },
-                    new Option { Text = "Stand up and walk forward.",            OnChosen = () => LoadSituation("walk_forward_cabinet"), Row = 2 },
+                    // the options for when you've already tripped over the carpet
+                    new Option { Text = "Inspect the carpet.",  OnChosen = () => LoadSituation("TODO: carpet minigame"),  Row = 1 },
+                    new Option { Text = "Keep going.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
                 }
             },
 
-            ["trace_right"] = new Situation
+            ["trace_right_cabinet"] = new Situation
             {
                 Description = "The right wall feels the same — cold, smooth. A faint draft touches your wrist.",
                 Options = new List<Option>
