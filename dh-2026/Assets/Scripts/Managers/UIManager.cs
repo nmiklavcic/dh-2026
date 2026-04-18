@@ -23,6 +23,9 @@ public class UIManager : MonoBehaviour
     public Label InteractionText { get; private set; }
     public VisualElement InteractionOptions { get; private set; }
 
+    // Minigame feedback
+    private Label _minigameFeedbackText;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -48,6 +51,7 @@ public class UIManager : MonoBehaviour
         OptionsContainerR2 = root.Q("OptionsContainerR2");
         InteractionText    = root.Q<Label>("InteractionText");
         InteractionOptions = root.Q("InteractionOptions");
+        _minigameFeedbackText = root.Q<Label>("MinigameFeedbackText");
 
         Debug.Log("SituationText: " + (SituationText == null ? "NULL" : "OK"));
         Debug.Log("OptionsContainerR1: " + (OptionsContainerR1 == null ? "NULL" : "OK"));
@@ -106,4 +110,54 @@ public class UIManager : MonoBehaviour
         if (!_interactionPanel.ClassListContains("hidden"))
             ShowGameplay();
     }
+
+    public void ShowMinigame()
+    {
+        ShowFeelAround();
+    }
+
+    // ── Minigame feedback ───────────────────────────────────
+
+    /// <summary>
+    /// Show progress message (e.g., "Connected 3 of 5 dots")
+    /// </summary>
+    public void ShowMinigameProgress(int connected, int total)
+    {
+        if (_minigameFeedbackText != null)
+            _minigameFeedbackText.text = $"Connected {connected} of {total}";
+    }
+
+    /// <summary>
+    /// Show error message when wrong dot is clicked
+    /// </summary>
+    public void ShowMinigameError(string message = "Wrong dot! Try again.")
+    {
+        if (_minigameFeedbackText != null)
+            _minigameFeedbackText.text = message;
+    }
+
+    /// <summary>
+    /// Show completion message
+    /// </summary>
+    public void ShowMinigameCompletion(string message = "Picture complete!")
+    {
+        if (_minigameFeedbackText != null)
+            _minigameFeedbackText.text = message;
+    }
+
+    /// <summary>
+    /// Clear the minigame feedback text
+    /// </summary>
+    public void ClearMinigameFeedback()
+    {
+        if (_minigameFeedbackText != null)
+            _minigameFeedbackText.text = "";
+    }
+
+    // ── Getters ──────────────────────────────────────────────
+
+    public VisualElement GetGameplayPanel() => _gameplayPanel;
+    public VisualElement GetFeelAroundPanel() => _feelAroundPanel;
+    public VisualElement GetMemoryPanel() => _memoryPanel;
+    public VisualElement GetInteractionPanel() => _interactionPanel;
 }

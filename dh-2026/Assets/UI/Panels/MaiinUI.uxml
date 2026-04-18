@@ -8,7 +8,10 @@
         </ui:VisualElement>
         <ui:VisualElement name="FeelAroundPanel" class="panel hidden">
             <ui:Label name="FeelAroundPrompt" text="Use your hands to feel what is in front of you." class="feel-around-prompt"/>
-            <ui:VisualElement name="RevealArea" class="reveal-area"/>
+            <ui:VisualElement name="DotConnectingMinigame" class="dot-connecting-minigame">
+                <ui:VisualElement name="DotsContainer" class="dots-container"/>
+                <ui:Label name="MinigameFeedbackText" text="" class="minigame-feedback-text"/>
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="MemoryPanel" class="panel memory-panel hidden">
             <ui:VisualElement name="MapSection" class="map-section">

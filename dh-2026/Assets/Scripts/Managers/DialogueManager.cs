@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class DialogueManager : MonoBehaviour
@@ -84,6 +85,20 @@ public class DialogueManager : MonoBehaviour
                 }
             },
 
+            ["go_cabinet_start"] = new Situation
+            {
+                Description = () => "You get up wondering how you got here in the first place IDK spremen pol.",
+                Options = () => new List<Option>
+                {
+                    // the starting options you are met with when you wake up in the cabinet
+                    // trace left wall, trace right wall and go straight
+                    new Option { Text = () => "Feel around the room.",  OnChosen = () => StartDotGame(),  Row = 1 },
+                    new Option { Text = () => "Trace your hand along the right wall.", OnChosen = () => LoadSituation("trace_right_cabinet"), Row = 1 },
+                    new Option { Text = () => "Stand up and walk forward.",            OnChosen = () => LoadSituation("walk_forward_cabinet"), Row = 2 },
+                }
+            },
+
+            
             ["cabinet_start"] = new Situation
             {
                 Description = () => hasFlag("cabinet_start") ? "You are back where you started.\nSquare one.\nYou stop and wonder if you will ever escape this god awfull place." : "You get up wondering how you got here in the first place.\nNot having many other options you decide to explore your new environment.",
@@ -365,9 +380,37 @@ public class DialogueManager : MonoBehaviour
                         LoadSituation("study_door_inner");
                     }, Row = 2 },
                 }
-            } 
+            },
+
+            ["dot_game_complete"] = new Situation
+            {
+                Description = () =>"Your fingers trace the connected dots, forming a pattern. A shape emerges — a doorway, perhaps, or a way forward. The pattern felt complete under your touch.",
+                Options = () => new List<Option>
+                {
+                    new Option { Text = () => "Continue exploring.", OnChosen = () => LoadSituation("cabinet_door_inside"), Row = 1 },
+                }
+            },
 
         };
+    }
+
+    private void StartDotGame()
+    {
+        if (DotConnectingMinigame.Instance == null)
+        {
+            GameObject minigameGO = new GameObject("DotConnectingMinigame");
+            minigameGO.AddComponent<DotConnectingMinigame>();
+        }
+        
+        DotConnectingMinigame.Instance.StartGame(() => OnDotGameComplete());
+    }
+
+    public void OnDotGameComplete()
+    {
+        Debug.Log("Dot game completed!");
+        UIManager.Instance.ShowGameplay();
+
+        LoadSituation("dot_game_complete");
     }
 
     // ── Load a situation ─────────────────────────────────────
