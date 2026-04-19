@@ -3,8 +3,8 @@
     <ui:VisualElement name="Root" class="root">
         <ui:VisualElement name="MainMenuPanel" class="panel menu-panel hidden">
             <ui:VisualElement class="menu-card">
-                <ui:Label text="DARK HOUSE" class="menu-title"/>
-                <ui:Label text="A cold silence waits behind every door." class="menu-subtitle"/>
+                <ui:Label text="SEE YOURSELF OUT!" class="menu-title"/>
+                <ui:Label text="Find your way in the dark." class="menu-subtitle"/>
                 <ui:Button name="StartGameButton" text="Start Game" class="menu-button"/>
                 <ui:Button name="MainMenuSettingsButton" text="Settings" class="menu-button"/>
                 <ui:Button name="QuitGameButton" text="Quit" class="menu-button menu-button-secondary"/>
