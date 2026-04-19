@@ -8,7 +8,7 @@ A 2D escape-room style game about a blind protagonist who wakes up in an unknown
 
 ## Team
 
-3 people (collaborative project).
+4 people (collaborative project).
 
 ---
 
@@ -47,7 +47,7 @@ The player is given three options:
 
 ---
 
-## Feel Around Minigame
+<!---## Feel Around Minigame
 
 Triggered when the player chooses **Check** on an unknown object.
 
@@ -96,7 +96,7 @@ A full-screen overlay split into two sections:
   - Lock requirements for locked doors
   - Placeholder entries for objects the player passed without checking (text only, no visual)
 
----
+--->
 
 ## World Layout
 
@@ -112,23 +112,21 @@ Serves dual purpose:
 - **Atmospheric** — ambient sounds setting mood throughout
 - **Gameplay-critical** — some puzzles require the player to follow or interpret sounds (e.g. a dripping tap indicates water is nearby in the bathroom)
 
-All audio is **placeholder** for now — real assets to be added later.
-
 ---
 
-## Save System
+<!--## Save System
 
 The game is designed to be completable in one long sitting but includes a save system as a safety net.
 
----
+--->
 
-## Fail States
+<!--## Fail States
 
 None — no game over, no punishment for choices. The player can take as long as they want.
 
----
+--->
 
-## Puzzles
+<!--## Puzzles
 
 Mostly designed. To be documented individually as each is built.
 
@@ -136,7 +134,7 @@ Mostly designed. To be documented individually as each is built.
 - Fill a bottle with the correct amount of water to balance a scale
 - Player discovers water is nearby by hearing an unclosed tap dripping in the bathroom
 
----
+--->
 
 ## Project Stack
 
