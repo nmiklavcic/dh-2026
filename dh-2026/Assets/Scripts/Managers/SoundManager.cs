@@ -108,4 +108,16 @@ public class SoundManager : MonoBehaviour
         return Resources.Load<AudioClip>($"Audio/{folder}/{soundName}");
 #endif
     }
+
+    public void PlayAudioClip(AudioClip clip, float volume = 100f)
+{
+    if (audioSource == null)
+    {
+        Debug.LogError("AudioSource not initialized");
+        return;
+    }
+    
+    audioSource.volume = volume;
+    audioSource.PlayOneShot(clip);
+}
 }

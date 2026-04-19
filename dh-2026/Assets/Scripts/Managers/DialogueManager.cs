@@ -685,15 +685,12 @@ public class DialogueManager : MonoBehaviour
         }
 
         // Start loop if entering "start" situation
-        if (id == "start" && _currentSituation != "start")
-        {
-            SoundManager.Instance.PlaySoundLoop("fireplace-1", 0.5f);
-        }
-
-        // Stop loop if leaving "start" situation
-        if (_currentSituation == "start" && id != "start")
-        {
-            SoundManager.Instance.StopLoop();
+        if (id == "start") {
+            if (_currentSituation != "start"){
+                SoundManager.Instance.PlaySoundLoop("fireplace-1", 0.5f);
+            } else {
+                SoundManager.Instance.StopLoop();
+            }
         }
 
         _currentSituation = id;
@@ -705,6 +702,20 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(TypeSituation(situation, ui));
 
         ui.ShowGameplay();
+
+        // Read situation description with TTS
+        try
+        {
+            string description = situation.Description();
+            if (!string.IsNullOrEmpty(description))
+            {
+                TextToSpeechManager.Instance.SpeakText(description);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log("TTS failed: " + e.Message);
+        }
     }
 
     private IEnumerator TypeSituation(Situation situation, UIManager ui)
