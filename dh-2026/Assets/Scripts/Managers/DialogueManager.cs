@@ -119,7 +119,7 @@ public class DialogueManager : MonoBehaviour
                     new Option { Text = () => "Walk forward, into the unknown.", OnChosen = () => 
                     {
                         setFlag("cabinet_start");
-                        LoadSituation("cabinet_carpet"); 
+                        StartPuzzleGame(); 
                     }, Row = 2 },
                 }
             },
@@ -643,6 +643,25 @@ public class DialogueManager : MonoBehaviour
         UIManager.Instance.ShowGameplay();
 
         LoadSituation("dot_game_complete");
+    }
+
+    private void StartPuzzleGame()
+    {
+        if (JigsawPuzzleMinigame.Instance == null)
+        {
+            GameObject minigameGO = new GameObject("JigsawPuzzleMinigame");
+            minigameGO.AddComponent<JigsawPuzzleMinigame>();
+        }
+        
+        JigsawPuzzleMinigame.Instance.StartGame(() => OnPuzzleGameComplete());
+    }
+
+    public void OnPuzzleGameComplete()
+    {
+        Debug.Log("Puzzle game completed!");
+        UIManager.Instance.ShowGameplay();
+
+        LoadSituation("cabinet_start");
     }
 
     // ── Load a situation ─────────────────────────────────────

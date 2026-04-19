@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     private VisualElement _feelAroundPanel;
     private VisualElement _memoryPanel;
     private VisualElement _interactionPanel;
+    private VisualElement _puzzlePanel;
 
     // Gameplay elements
     public Label SituationText { get; private set; }
@@ -42,6 +43,7 @@ public class UIManager : MonoBehaviour
         _feelAroundPanel  = root.Q("FeelAroundPanel");
         _memoryPanel      = root.Q("MemoryPanel");
         _interactionPanel = root.Q("InteractionPanel");
+        _puzzlePanel      = root.Q("PuzzlePanel");
 
         Debug.Log("GameplayPanel: " + (_gameplayPanel == null ? "NULL" : "OK"));
         Debug.Log("FeelAroundPanel: " + (_feelAroundPanel == null ? "NULL" : "OK"));
@@ -78,6 +80,7 @@ public class UIManager : MonoBehaviour
         _feelAroundPanel.AddToClassList("hidden");
         _memoryPanel.AddToClassList("hidden");
         _interactionPanel.AddToClassList("hidden");
+        _puzzlePanel.AddToClassList("hidden");
     }
 
     public void ShowFeelAround()
@@ -86,6 +89,7 @@ public class UIManager : MonoBehaviour
         _gameplayPanel.AddToClassList("hidden");
         _memoryPanel.AddToClassList("hidden");
         _interactionPanel.AddToClassList("hidden");
+        _puzzlePanel.AddToClassList("hidden");
     }
 
     public void ShowInteraction()
@@ -94,6 +98,16 @@ public class UIManager : MonoBehaviour
         _gameplayPanel.AddToClassList("hidden");
         _feelAroundPanel.AddToClassList("hidden");
         _memoryPanel.AddToClassList("hidden");
+        _puzzlePanel.AddToClassList("hidden");
+    }
+
+    public void ShowPuzzle()
+    {
+        _puzzlePanel.RemoveFromClassList("hidden");
+        _gameplayPanel.AddToClassList("hidden");
+        _feelAroundPanel.AddToClassList("hidden");
+        _memoryPanel.AddToClassList("hidden");
+        _interactionPanel.AddToClassList("hidden");
     }
 
     public void ToggleMemory()
@@ -158,6 +172,7 @@ public class UIManager : MonoBehaviour
 
     public VisualElement GetGameplayPanel() => _gameplayPanel;
     public VisualElement GetFeelAroundPanel() => _feelAroundPanel;
+    public VisualElement GetPuzzlePanel() => _puzzlePanel;
     public VisualElement GetMemoryPanel() => _memoryPanel;
     public VisualElement GetInteractionPanel() => _interactionPanel;
 }

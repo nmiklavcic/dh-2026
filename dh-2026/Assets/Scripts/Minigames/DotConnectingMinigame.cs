@@ -220,8 +220,8 @@ public class DotConnectingMinigame : MonoBehaviour
             new Length(50f, LengthUnit.Percent),
             0f
         );
-        line.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-        line.pickingMode        = PickingMode.Ignore;
+        line.style.rotate = new Rotate(angle);
+        line.pickingMode = PickingMode.Ignore;
 
         linesContainer.Add(line);
     }
