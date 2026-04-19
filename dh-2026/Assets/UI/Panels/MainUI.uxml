@@ -36,6 +36,8 @@
                 <ui:Label text="The house can wait for a moment." class="menu-subtitle"/>
                 <ui:Button name="PauseResumeButton" text="Resume" class="menu-button"/>
                 <ui:Button name="PauseSettingsButton" text="Settings" class="menu-button"/>
+                <ui:Button name="PauseSaveButton" text="Save Game" class="menu-button"/>
+                <ui:Label name="PauseSaveStatusLabel" text="" class="menu-status hidden"/>
                 <ui:Button name="PauseMainMenuButton" text="Main Menu" class="menu-button menu-button-secondary"/>
             </ui:VisualElement>
         </ui:VisualElement>

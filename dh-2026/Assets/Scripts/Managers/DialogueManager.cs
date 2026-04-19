@@ -55,14 +55,19 @@ public class DialogueManager : MonoBehaviour
 
     public void AddItem(string name, Action onUse)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+
         _inventory.Add(new InventoryItem { Name = name, OnUse = onUse });
-        UIManager.Instance.RefreshInventory(_inventory);
+        UIManager.Instance?.RefreshInventory(_inventory);
     }
 
     public void RemoveItem(string name)
     {
         _inventory.RemoveAll(i => i.Name == name);
-        UIManager.Instance.RefreshInventory(_inventory);
+        UIManager.Instance?.RefreshInventory(_inventory);
     }
 
     // Characters per second
@@ -72,6 +77,7 @@ public class DialogueManager : MonoBehaviour
 
     private Dictionary<string, Situation> _situations;
     private string _currentSituation = "";
+    public bool HasProgressToSave => !string.IsNullOrWhiteSpace(_currentSituation);
 
     void Awake()
     {
@@ -619,6 +625,71 @@ public class DialogueManager : MonoBehaviour
     }
 
     // ── Load a situation ─────────────────────────────────────
+
+    public GameSaveData CreateSaveData()
+    {
+        return new GameSaveData
+        {
+            HasStartedGame = HasProgressToSave,
+            CurrentSituationId = _currentSituation,
+            Flags = new List<string>(_flags).ToArray(),
+            InventoryItems = GetInventoryItemNames()
+        };
+    }
+
+    public bool RestoreSaveData(GameSaveData saveData)
+    {
+        if (saveData == null || string.IsNullOrWhiteSpace(saveData.CurrentSituationId))
+        {
+            Debug.LogWarning("Cannot restore save data because it is incomplete.");
+            return false;
+        }
+
+        StopAllCoroutines();
+
+        _flags.Clear();
+        if (saveData.Flags != null)
+        {
+            foreach (string flag in saveData.Flags)
+            {
+                if (!string.IsNullOrWhiteSpace(flag))
+                {
+                    _flags.Add(flag);
+                }
+            }
+        }
+
+        _inventory.Clear();
+        if (saveData.InventoryItems != null)
+        {
+            foreach (string itemName in saveData.InventoryItems)
+            {
+                if (!string.IsNullOrWhiteSpace(itemName))
+                {
+                    _inventory.Add(new InventoryItem { Name = itemName });
+                }
+            }
+        }
+
+        UIManager.Instance?.RefreshInventory(_inventory);
+        LoadSituation(saveData.CurrentSituationId);
+        return true;
+    }
+
+    private string[] GetInventoryItemNames()
+    {
+        List<string> itemNames = new List<string>();
+
+        foreach (InventoryItem item in _inventory)
+        {
+            if (item != null && !string.IsNullOrWhiteSpace(item.Name))
+            {
+                itemNames.Add(item.Name);
+            }
+        }
+
+        return itemNames.ToArray();
+    }
 
     public void LoadSituation(string id)
     {

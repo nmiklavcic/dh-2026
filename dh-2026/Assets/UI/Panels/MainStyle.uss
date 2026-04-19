@@ -80,6 +80,15 @@
     color: rgb(170, 170, 170);
 }
 
+.menu-status {
+    color: rgb(140, 140, 140);
+    font-size: 12px;
+    -unity-text-align: middle-center;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    white-space: normal;
+}
+
 .settings-group {
     margin-bottom: 14px;
 }

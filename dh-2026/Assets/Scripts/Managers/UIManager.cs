@@ -47,7 +47,9 @@ public class UIManager : MonoBehaviour
     private Button _settingsBackButton;
     private Button _pauseResumeButton;
     private Button _pauseSettingsButton;
+    private Button _pauseSaveButton;
     private Button _pauseMainMenuButton;
+    private Label _pauseSaveStatusLabel;
     private Slider _masterVolumeSlider;
     private Slider _musicVolumeSlider;
     private Slider _sfxVolumeSlider;
@@ -98,6 +100,7 @@ public class UIManager : MonoBehaviour
         CacheElements(root);
         BindMenuEvents();
         LoadSettings();
+        UpdateStartGameButtonLabel();
     }
 
     private void Start()
@@ -179,7 +182,9 @@ public class UIManager : MonoBehaviour
         _settingsBackButton = root.Q<Button>("SettingsBackButton");
         _pauseResumeButton = root.Q<Button>("PauseResumeButton");
         _pauseSettingsButton = root.Q<Button>("PauseSettingsButton");
+        _pauseSaveButton = root.Q<Button>("PauseSaveButton");
         _pauseMainMenuButton = root.Q<Button>("PauseMainMenuButton");
+        _pauseSaveStatusLabel = root.Q<Label>("PauseSaveStatusLabel");
 
         _masterVolumeSlider = root.Q<Slider>("MasterVolumeSlider");
         _musicVolumeSlider = root.Q<Slider>("MusicVolumeSlider");
@@ -217,6 +222,11 @@ public class UIManager : MonoBehaviour
         if (_pauseSettingsButton != null)
         {
             _pauseSettingsButton.clicked += OnPauseSettingsClicked;
+        }
+
+        if (_pauseSaveButton != null)
+        {
+            _pauseSaveButton.clicked += OnPauseSaveClicked;
         }
 
         if (_pauseMainMenuButton != null)
@@ -275,6 +285,11 @@ public class UIManager : MonoBehaviour
         if (_pauseSettingsButton != null)
         {
             _pauseSettingsButton.clicked -= OnPauseSettingsClicked;
+        }
+
+        if (_pauseSaveButton != null)
+        {
+            _pauseSaveButton.clicked -= OnPauseSaveClicked;
         }
 
         if (_pauseMainMenuButton != null)
@@ -376,6 +391,12 @@ public class UIManager : MonoBehaviour
         {
             _gameStarted = true;
 
+            if (TryLoadSavedGame())
+            {
+                UpdateStartGameButtonLabel();
+                return;
+            }
+
             if (DialogueManager.Instance != null)
             {
                 DialogueManager.Instance.LoadSituation(StartSituationId);
@@ -385,6 +406,7 @@ public class UIManager : MonoBehaviour
                 ShowGameplay();
             }
 
+            UpdateStartGameButtonLabel();
             return;
         }
 
@@ -418,6 +440,19 @@ public class UIManager : MonoBehaviour
     private void OnPauseResumeClicked()
     {
         ResumeFromPause();
+    }
+
+    private void OnPauseSaveClicked()
+    {
+        if (!_gameStarted || DialogueManager.Instance == null || !DialogueManager.Instance.HasProgressToSave)
+        {
+            SetPauseSaveStatus("Nothing to save yet.");
+            return;
+        }
+
+        bool saveSucceeded = SaveManager.SaveGame(DialogueManager.Instance.CreateSaveData());
+        SetPauseSaveStatus(saveSucceeded ? "Game saved." : "Save failed.");
+        UpdateStartGameButtonLabel();
     }
 
     private void OnPauseMainMenuClicked()
@@ -469,6 +504,67 @@ public class UIManager : MonoBehaviour
                 ShowGameplay();
                 break;
         }
+    }
+
+    private bool TryLoadSavedGame()
+    {
+        if (DialogueManager.Instance == null)
+        {
+            return false;
+        }
+
+        if (!SaveManager.TryLoadGame(out GameSaveData saveData))
+        {
+            return false;
+        }
+
+        bool restoreSucceeded = DialogueManager.Instance.RestoreSaveData(saveData);
+        if (!restoreSucceeded)
+        {
+            Debug.LogWarning("A save file was found, but it could not be restored.");
+        }
+
+        return restoreSucceeded;
+    }
+
+    private void UpdateStartGameButtonLabel()
+    {
+        if (_startGameButton == null)
+        {
+            return;
+        }
+
+        if (_gameStarted)
+        {
+            _startGameButton.text = "Resume Game";
+            return;
+        }
+
+        _startGameButton.text = SaveManager.HasSave() ? "Continue" : "Start Game";
+    }
+
+    private void SetPauseSaveStatus(string message)
+    {
+        if (_pauseSaveStatusLabel == null)
+        {
+            return;
+        }
+
+        _pauseSaveStatusLabel.text = message ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(_pauseSaveStatusLabel.text))
+        {
+            _pauseSaveStatusLabel.AddToClassList(HiddenClass);
+        }
+        else
+        {
+            _pauseSaveStatusLabel.RemoveFromClassList(HiddenClass);
+        }
+    }
+
+    private void ClearPauseSaveStatus()
+    {
+        SetPauseSaveStatus(string.Empty);
     }
 
     private ActivePanel DetermineActivePanel()
@@ -558,6 +654,8 @@ public class UIManager : MonoBehaviour
         _mainMenuPanel.RemoveFromClassList(HiddenClass);
         _settingsMenuPanel.AddToClassList(HiddenClass);
         _pauseMenuPanel.AddToClassList(HiddenClass);
+        ClearPauseSaveStatus();
+        UpdateStartGameButtonLabel();
     }
 
     public void ShowSettingsMenu()
@@ -574,6 +672,7 @@ public class UIManager : MonoBehaviour
         _mainMenuPanel.AddToClassList(HiddenClass);
         _settingsMenuPanel.AddToClassList(HiddenClass);
         _pauseMenuPanel.RemoveFromClassList(HiddenClass);
+        ClearPauseSaveStatus();
     }
 
     public void HideMenuPanels()
