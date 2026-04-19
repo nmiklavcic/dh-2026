@@ -82,7 +82,7 @@ public class DialogueManager : MonoBehaviour
         {
             ["start"] = new Situation
             {
-                Description = () => "You wake up on a cold floor. The air is still. You have no idea where you are.",
+                Description = () => "You wake up on a cold floor. The air is still and unfamilliar. You have no idea where you are.",
                 Options = () => new List<Option>
                 {
                     // the starting options you are met with when you wake up in the cabinet
@@ -102,11 +102,9 @@ public class DialogueManager : MonoBehaviour
 
             // ── Cabinet ──────────────────────────────────────────────────────────────────
 
-            // ── Cabinet ──────────────────────────────────────────────────────────────────
-
             ["cabinet_door"] = new Situation
             {
-                Description = () => "{cabinet_door}",
+                Description = () => "",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("cabinet_window"), Row = 1 },
@@ -117,34 +115,36 @@ public class DialogueManager : MonoBehaviour
 
             ["cabinet_start"] = new Situation
             {
-                Description = () => "{cabinet_start}",
+                Description = () => "You get up, scared but determined to esacep this place you are now lost in.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("cabinet_window"), Row = 1 },
                     new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation("cabinet_table"), Row = 1 },
-                    new Option { Text = () => "Go east in to the unknown.", OnChosen = () => LoadSituation("cabinet_carpet"), Row = 2 },
+                    new Option { Text = () => "Go east, straight in to the unknown.", OnChosen = () => LoadSituation("cabinet_carpet"), Row = 2 },
                 }
             },
 
             ["cabinet_carpet"] = new Situation
             {
-                Description = () => "{cabinet_carpet}",
+                Description = () => (hasFlag("cabinet_carpet_visited") ? "{cabinet_carpet}" : "{cabinet_carpet}")
+                    + (hasFlag("cabinet_carpet_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
-                    new Option { Text = () => "Go east.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
-                    new Option { Text = () => "Go west.", OnChosen = () => LoadSituation("cabinet_start"), Row = 1 },
-                    //new Option { Text = () => "Check what you tripped over.", OnChosen = () => LoadSituation("cabinet_carpet_check"), Row = 2 },
+                    new Option { Text = () => "Go east.", OnChosen = () => { setFlag("cabinet_carpet_visited"); LoadSituation("cabinet_door"); }, Row = 1 },
+                    new Option { Text = () => "Go west.", OnChosen = () => { setFlag("cabinet_carpet_visited"); LoadSituation("cabinet_start"); }, Row = 1 },
+                    new Option { Text = () => hasFlag("cabinet_carpet_checked") ? "Check the carpet." : "Check what you tripped over.", OnChosen = () => { setFlag("cabinet_carpet_checked"); LoadSituation("cabinet_carpet"); }, Row = 2 },
                 }
             },
 
             ["cabinet_table"] = new Situation
             {
-                Description = () => "{cabinet_table}",
+                Description = () => (hasFlag("cabinet_table_visited") ? "{cabinet_table}" : "{cabinet_table}")
+                    + (hasFlag("cabinet_table_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
-                    new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
-                    new Option { Text = () => "Go west along the wall.", OnChosen = () => LoadSituation("cabinet_start"), Row = 1 },
-                    //new Option { Text = () => "Check what you hit.", OnChosen = () => LoadSituation("cabinet_table_check"), Row = 2 },
+                    new Option { Text = () => "Go east along the wall.", OnChosen = () => { setFlag("cabinet_table_visited"); LoadSituation("cabinet_door"); }, Row = 1 },
+                    new Option { Text = () => "Go west along the wall.", OnChosen = () => { setFlag("cabinet_table_visited"); LoadSituation("cabinet_start"); }, Row = 1 },
+                    new Option { Text = () => hasFlag("cabinet_table_checked") ? "Check the table." : "Check what you hit.", OnChosen = () => { setFlag("cabinet_table_checked"); LoadSituation("cabinet_table"); }, Row = 2 },
                 }
             },
 
@@ -322,31 +322,33 @@ public class DialogueManager : MonoBehaviour
                 Description = () => "{study_door}",
                 Options = () => new List<Option>
                 {
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 2 },
+                    new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("study_skeleton"), Row = 1 },
+                    new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation(""), Row = 1 },
+                    new Option { Text = () => "Exit the study.", OnChosen = () => LoadSituation("hallway_study_door"), Row = 2 },
                 }
             },
 
             ["study_skeleton"] = new Situation
             {
-                Description = () => "{study_skeleton}",
+                Description = () => (hasFlag("study_skeleton_visited") ? "{study_skeleton}" : "{study_skeleton}")
+                    + (hasFlag("study_skeleton_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 2 },
+                    new Option { Text = () => "Go east along the wall.", OnChosen = () => { setFlag("study_skeleton_visited"); LoadSituation("study_door"); }, Row = 1 },
+                    new Option { Text = () => "Go south along the wall.", OnChosen = () => { setFlag("study_skeleton_visited"); LoadSituation("study_table"); }, Row = 1 },
+                    new Option { Text = () => hasFlag("study_skeleton_checked") ? "Check the skeleton." : "Check what you hit.", OnChosen = () => { setFlag("study_skeleton_checked"); LoadSituation("study_skeleton"); }, Row = 2 },
                 }
             },
 
             ["study_table"] = new Situation
             {
-                Description = () => "{study_table}",
+                Description = () => (hasFlag("study_table_visited") ? "{study_table}" : "{study_table}")
+                    + (hasFlag("study_table_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 2 },
+                    new Option { Text = () => "Go east along the wall.", OnChosen = () => { setFlag("study_table_visited"); LoadSituation("study_door"); }, Row = 1 },
+                    new Option { Text = () => "Go west along the wall.", OnChosen = () => { setFlag("study_table_visited"); LoadSituation("study_skeleton"); }, Row = 1 },
+                    new Option { Text = () => hasFlag("study_table_checked") ? "Check the table." : "Check what you hit.", OnChosen = () => { setFlag("study_table_checked"); LoadSituation("study_table"); }, Row = 2 },
                 }
             },
 
@@ -357,42 +359,45 @@ public class DialogueManager : MonoBehaviour
                 Description = () => "{bathroom_door}",
                 Options = () => new List<Option>
                 {
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 2 },
+                    new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("bathroom_bath"), Row = 1 },
+                    new Option { Text = () => "Go west along the wall.", OnChosen = () => LoadSituation("bathroom_sink"), Row = 1 },
+                    new Option { Text = () => "Exit the bathroom.", OnChosen = () => LoadSituation("hallway_bathroom_door"), Row = 2 },
                 }
             },
 
             ["bathroom_bath"] = new Situation
             {
-                Description = () => "{bathroom_bath}",
+                Description = () => (hasFlag("bathroom_bath_visited") ? "{bathroom_bath}" : "{bathroom_bath}")
+                    + (hasFlag("bathroom_bath_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 2 },
+                    new Option { Text = () => "Go north hugging the wall.", OnChosen = () => { setFlag("bathroom_bath_visited"); LoadSituation("bathroom_toilet"); }, Row = 1 },
+                    new Option { Text = () => "Go west along the wall.", OnChosen = () => { setFlag("bathroom_bath_visited"); LoadSituation("bathroom_door"); }, Row = 1 },
+                    new Option { Text = () => hasFlag("bathroom_bath_checked") ? "Check the bathtub." : "Check what you hit.", OnChosen = () => { setFlag("bathroom_bath_checked"); LoadSituation("bathroom_bath"); }, Row = 2 },
                 }
             },
 
             ["bathroom_toilet"] = new Situation
             {
-                Description = () => "{bathroom_toilet}",
+                Description = () => (hasFlag("bathroom_toilet_visited") ? "{bathroom_toilet}" : "{bathroom_toilet}")
+                    + (hasFlag("bathroom_toilet_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 2 },
+                    new Option { Text = () => "Go west along the wall.", OnChosen = () => { setFlag("bathroom_toilet_visited"); LoadSituation("bathroom_sink"); }, Row = 1 },
+                    new Option { Text = () => "Go south hugging the wall.", OnChosen = () => { setFlag("bathroom_toilet_visited"); LoadSituation("bathroom_bath"); }, Row = 1 },
+                    new Option { Text = () => hasFlag("bathroom_toilet_checked") ? "Check the toilet." : "Check what you hit.", OnChosen = () => { setFlag("bathroom_toilet_checked"); LoadSituation("bathroom_toilet"); }, Row = 2 },
                 }
             },
 
             ["bathroom_sink"] = new Situation
             {
-                Description = () => "{bathroom_sink}",
+                Description = () => (hasFlag("bathroom_sink_visited") ? "{bathroom_sink}" : "{bathroom_sink}")
+                    + (hasFlag("bathroom_sink_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
-                    new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 2 },
+                    new Option { Text = () => "Go east along the wall.", OnChosen = () => { setFlag("bathroom_sink_visited"); LoadSituation("bathroom_toilet"); }, Row = 1 },
+                    new Option { Text = () => "Go south along the wall.", OnChosen = () => { setFlag("bathroom_sink_visited"); LoadSituation("bathroom_door"); }, Row = 1 },
+                    new Option { Text = () => hasFlag("bathroom_sink_checked") ? "Check the sink." : "Check what you hit.", OnChosen = () => { setFlag("bathroom_sink_checked"); LoadSituation("bathroom_sink"); }, Row = 2 },
                 }
             },
 

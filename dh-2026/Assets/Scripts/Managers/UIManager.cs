@@ -160,6 +160,15 @@ public class UIManager : MonoBehaviour
         SituationText = root.Q<Label>("SituationText");
         OptionsContainerR1 = root.Q("OptionsContainerR1");
         OptionsContainerR2 = root.Q("OptionsContainerR2");
+        OptionsContainerR3 = root.Q("OptionsContainerR3");
+        if (OptionsContainerR3 == null)
+        {
+            OptionsContainerR3 = new VisualElement();
+            OptionsContainerR3.name = "OptionsContainerR3";
+            OptionsContainerR3.AddToClassList("options-container-r3");
+            OptionsContainerR3.AddToClassList(HiddenClass);
+            _gameplayPanel?.Add(OptionsContainerR3);
+        }
         InteractionText = root.Q<Label>("InteractionText");
         InteractionOptions = root.Q("InteractionOptions");
         _minigameFeedbackText = root.Q<Label>("MinigameFeedbackText");
@@ -600,6 +609,30 @@ public class UIManager : MonoBehaviour
         if (!_interactionPanel.ClassListContains(HiddenClass))
         {
             ShowGameplay();
+        }
+    }
+
+    public void RefreshInventory(System.Collections.Generic.List<DialogueManager.InventoryItem> items)
+    {
+        if (OptionsContainerR3 == null) return;
+        OptionsContainerR3.Clear();
+
+        if (items == null || items.Count == 0)
+        {
+            OptionsContainerR3.AddToClassList(HiddenClass);
+            return;
+        }
+
+        OptionsContainerR3.RemoveFromClassList(HiddenClass);
+
+        foreach (var item in items)
+        {
+            var btn = new Button();
+            btn.text = $"[ {item.Name} ]";
+            btn.AddToClassList("inventory-button");
+            var captured = item;
+            btn.clicked += () => captured.OnUse?.Invoke();
+            OptionsContainerR3.Add(btn);
         }
     }
 
