@@ -61,13 +61,13 @@ public class DialogueManager : MonoBehaviour
         }
 
         _inventory.Add(new InventoryItem { Name = name, OnUse = onUse });
-        UIManager.Instance?.RefreshInventory(_inventory);
+        UIManager.Instance.RefreshInventory(_inventory);
     }
 
     public void RemoveItem(string name)
     {
         _inventory.RemoveAll(i => i.Name == name);
-        UIManager.Instance?.RefreshInventory(_inventory);
+        UIManager.Instance.RefreshInventory(_inventory);
     }
 
     // Characters per second
@@ -88,21 +88,14 @@ public class DialogueManager : MonoBehaviour
         {
             ["start"] = new Situation
             {
-                Description = () => "You wake up on a cold floor. The air is still and unfamilliar. You have no idea where you are.",
+                Description = () => "You wake up on a cold floor. The air is still and unfamiliar. You have no idea where you are.",
                 Options = () => new List<Option>
                 {
-                    // the starting options you are met with when you wake up in the cabinet
-                    // One option to get user familiar with the gameplay
-                    new Option { Text = () => "Get up.",  OnChosen = () => {
+                    new Option { Text = () => "Get up.", OnChosen = () => {
                         LoadSituation("cabinet_start");
-                        try
-                        {
-                            SoundManager.Instance.PlaySound("door_open");
-                        } catch (Exception e) { 
-                            Debug.Log("Sound not found. " + e.Message); 
-                        }
-                        
-                    },  Row = 1 }
+                        try { SoundManager.Instance.PlaySound("door_open"); }
+                        catch (Exception e) { Debug.Log("Sound not found. " + e.Message); }
+                    }, Row = 1 }
                 }
             },
 
@@ -110,58 +103,84 @@ public class DialogueManager : MonoBehaviour
 
             ["cabinet_door"] = new Situation
             {
-                Description = () => "",
-                Options = () => new List<Option>
+                Description = () => hasFlag("has_doorknob")
+                    ? "Your fingers find the doorframe. You fit the knob onto the spindle — it clicks into place. For the first time, there is a way out of this room."
+                    : hasFlag("cabinet_table_checked")
+                        ? "Your fingers find the doorframe and search for a handle. There is only a bare spindle where a knob should be. The door is going nowhere, and neither are you — not yet."
+                        : "Your fingers find a doorframe. The wood is cold and smooth. Your hand searches for the handle and finds only a bare spindle. Something is missing.",
+                Options = () =>
                 {
-                    new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("cabinet_window"), Row = 1 },
-                    new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation("cabinet_table"), Row = 1 },
-                    new Option { Text = () => "Go straight through the door.", OnChosen = () => LoadSituation("hallway_o_Cabinet_door"), Row = 2 },
-                }
+                    var opts = new List<Option>
+                    {
+                        new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("cabinet_window"), Row = 1 },
+                        new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation("cabinet_table"), Row = 1 },
+                    };
+                    if (hasFlag("has_doorknob"))
+                        opts.Add(new Option { Text = () => "Fit the doorknob and step through.", OnChosen = () => { removeFlag("has_doorknob"); LoadSituation("hallway_cabinet_door"); }, Row = 2 });
+                    return opts;
+                },
             },
 
             ["cabinet_start"] = new Situation
             {
-                Description = () => "You get up, scared but determined to esacep this place you are now lost in.",
+                Description = () => "You get up, scared but determined to escape this place you are now lost in.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("cabinet_window"), Row = 1 },
                     new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation("cabinet_table"), Row = 1 },
-                    new Option { Text = () => "Go east, straight in to the unknown.", OnChosen = () => LoadSituation("cabinet_carpet"), Row = 2 },
+                    new Option { Text = () => "Go east, straight into the unknown.", OnChosen = () => LoadSituation("cabinet_carpet"), Row = 2 },
                 }
             },
 
             ["cabinet_carpet"] = new Situation
             {
-                Description = () => (hasFlag("cabinet_carpet_visited") ? "{cabinet_carpet}" : "{cabinet_carpet}")
-                    + (hasFlag("cabinet_carpet_checked") ? "\nDo you need something here?" : ""),
+                Description = () => hasFlag("cabinet_carpet_checked")
+                    ? "After a thorough investigation, you find a key hidden underneath the carpet."
+                    : (hasFlag("cabinet_carpet_visited")
+                        ? "You approach the spot where you absolutely did not embarrass yourself earlier."
+                        : "Your foot catches on something soft and you stumble forward like a newborn deer on a freshly waxed floor. Graceful. Very graceful."),
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east.", OnChosen = () => { setFlag("cabinet_carpet_visited"); LoadSituation("cabinet_door"); }, Row = 1 },
                     new Option { Text = () => "Go west.", OnChosen = () => { setFlag("cabinet_carpet_visited"); LoadSituation("cabinet_start"); }, Row = 1 },
-                    new Option { Text = () => hasFlag("cabinet_carpet_checked") ? "Check the carpet." : "Check what you tripped over.", OnChosen = () => { setFlag("cabinet_carpet_checked"); LoadSituation("cabinet_carpet"); }, Row = 2 },
+                    new Option { Text = () => hasFlag("cabinet_carpet_checked") ? "Check the carpet." : "Check what you tripped over.", OnChosen = () => {
+                        setFlag("cabinet_carpet_checked");
+                        LoadSituation("cabinet_carpet");
+                    }, Row = 2 },
                 }
             },
 
             ["cabinet_table"] = new Situation
             {
-                Description = () => (hasFlag("cabinet_table_visited") ? "{cabinet_table}" : "{cabinet_table}")
-                    + (hasFlag("cabinet_table_checked") ? "\nDo you need something here?" : ""),
-                Options = () => new List<Option>
+                Description = () => hasFlag("cabinet_table_drawer_unlocked")
+                    ? "The drawer is open. Inside, your fingers close around a small metal knob — the missing doorknob from the cabinet door. Without it, you were never getting out of here."
+                    : hasFlag("cabinet_table_checked")
+                        ? "After a thorough investigation you find a cassette player on top and a locked drawer below. You'll need a key."
+                        : (hasFlag("cabinet_table_visited")
+                            ? "You return to the scene of the hip crime."
+                            : "Your hip connects with something solid and completely unapologetic. Whatever this is, it is not sorry. Not even a little."),
+                Options = () =>
                 {
-                    new Option { Text = () => "Go east along the wall.", OnChosen = () => { setFlag("cabinet_table_visited"); LoadSituation("cabinet_door"); }, Row = 1 },
-                    new Option { Text = () => "Go west along the wall.", OnChosen = () => { setFlag("cabinet_table_visited"); LoadSituation("cabinet_start"); }, Row = 1 },
-                    new Option { Text = () => hasFlag("cabinet_table_checked") ? "Check the table." : "Check what you hit.", OnChosen = () => { setFlag("cabinet_table_checked"); LoadSituation("cabinet_table"); }, Row = 2 },
-                }
+                    var opts = new List<Option>
+                    {
+                        new Option { Text = () => "Go east along the wall.", OnChosen = () => { setFlag("cabinet_table_visited"); LoadSituation("cabinet_door"); }, Row = 1 },
+                        new Option { Text = () => "Go west along the wall.", OnChosen = () => { setFlag("cabinet_table_visited"); LoadSituation("cabinet_start"); }, Row = 1 },
+                        new Option { Text = () => hasFlag("cabinet_table_checked") ? "Check the table." : "Check what you hit.", OnChosen = () => { setFlag("cabinet_table_checked"); LoadSituation("cabinet_table"); }, Row = 2 },
+                    };
+                    if (hasFlag("cabinet_table_checked") && hasFlag("cabinet_carpet_checked") && !hasFlag("cabinet_table_drawer_unlocked"))
+                        opts.Add(new Option { Text = () => "Use the key on the drawer.", OnChosen = () => { setFlag("cabinet_table_drawer_unlocked"); setFlag("has_doorknob"); LoadSituation("cabinet_table"); }, Row = 3 });
+                    return opts;
+                },
             },
 
             ["cabinet_window"] = new Situation
             {
-                Description = () => "{cabinet_table}",
+                Description = () => "Cool air brushes your face. Your fingers find a windowsill. The window is open — or broken — either way, outside is out there, taunting you.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("cabinet_door"), Row = 1 },
                     new Option { Text = () => "Go west along the wall.", OnChosen = () => LoadSituation("cabinet_start"), Row = 1 },
-                    //new Option { Text = () => "Jump through the open window", OnChosen = () => LoadSituation("cabinet_window_check"), Row = 2 },
+                    //new Option { Text = () => "Jump through the open window.", OnChosen = () => LoadSituation("cabinet_window_check"), Row = 2 },
                 }
             },
 
@@ -169,18 +188,18 @@ public class DialogueManager : MonoBehaviour
 
             ["hallway_cabinet_door"] = new Situation
             {
-                Description = () => "{hallway_cabinet_door}",
+                Description = () => "You step into a corridor. The air is different here — wider, emptier. You trace the wall and find the door you came through behind you. The hallway stretches in both directions. Someone lived here. Maybe still does. You prefer not to think about that.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("livingroom_gramophone"), Row = 1 },
                     new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation("hallway_closet_door"), Row = 1 },
-                    new Option { Text = () => "Eneter cabinet", OnChosen = () => LoadSituation("cabinet_door"), Row = 2 },
+                    new Option { Text = () => "Enter cabinet.", OnChosen = () => LoadSituation("cabinet_door"), Row = 2 },
                 }
             },
 
             ["hallway_o_cabinet_door"] = new Situation
             {
-                Description = () => "{hallway_o_cabinet_door}",
+                Description = () => "You reach the far wall. It is disappointingly just a wall. No door, no window, no secret passage. Just wall. Classic wall behavior.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("livingroom_casete_table"), Row = 1 },
@@ -191,18 +210,18 @@ public class DialogueManager : MonoBehaviour
 
             ["hallway_closet_door"] = new Situation
             {
-                Description = () => "{hallway_closet_door}",
+                Description = () => "Your hand brushes over a door. Smaller than the last one. The kind of door that quietly suggests 'coats in here' — or possibly 'things that wear coats.'",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("hallway_cabinet_door"), Row = 1 },
                     new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation("hallway_study_door"), Row = 1 },
-                    //new Option { Text = () => "Check the closet", OnChosen = () => LoadSituation("closet_check"), Row = 2 },
+                    //new Option { Text = () => "Check the closet.", OnChosen = () => LoadSituation("closet_check"), Row = 2 },
                 }
             },
 
             ["hallway_o_closet_door"] = new Situation
             {
-                Description = () => "{hallway_o_closet_door}",
+                Description = () => "The south wall. Flat, featureless, and profoundly unhelpful. You appreciate its commitment to mediocrity.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("livingroom_casete_table"), Row = 1 },
@@ -213,18 +232,18 @@ public class DialogueManager : MonoBehaviour
 
             ["hallway_study_door"] = new Situation
             {
-                Description = () => "{hallway_study_door}",
+                Description = () => "Another door. This one feels heavier, older. The handle is brass and slightly sticky. You choose not to investigate why.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("hallway_closet_door"), Row = 1 },
-                    new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation("hallway_creaking_board"), Row = 1 },
+                    new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation("hallway_creaking_board_s"), Row = 1 },
                     new Option { Text = () => "Enter study.", OnChosen = () => LoadSituation("study_door"), Row = 2 },
                 }
             },
 
             ["hallway_o_study_door"] = new Situation
             {
-                Description = () => "{hallway_o_study_door}",
+                Description = () => "The north wall here offers nothing but plaster and existential dread. You've touched more interesting walls today, and that is saying something.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("livingroom_casete_table"), Row = 1 },
@@ -235,7 +254,7 @@ public class DialogueManager : MonoBehaviour
 
             ["hallway_bathroom_door"] = new Situation
             {
-                Description = () => "{hallway_bathroom_door}",
+                Description = () => "You detect it before you touch it — the faint smell of damp tile and old soap. A bathroom door. At least someone in this house had priorities.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("hallway_creaking_board_n"), Row = 1 },
@@ -246,18 +265,18 @@ public class DialogueManager : MonoBehaviour
 
             ["hallway_o_bathroom_door"] = new Situation
             {
-                Description = () => "{hallway_o_bathroom_door}",
+                Description = () => "The wall across from the bathroom. You can still smell the soap from here. It's almost comforting. Almost.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("hallway_creaking_board_s"), Row = 1 },
                     new Option { Text = () => "Go west along the wall.", OnChosen = () => LoadSituation("hallway_study_door"), Row = 1 },
-                    new Option { Text = () => "Go north, back to the bathroom.", OnChosen = () => LoadSituation("hallway_bathroom_Door"), Row = 2 },
+                    new Option { Text = () => "Go north, back to the bathroom.", OnChosen = () => LoadSituation("hallway_bathroom_door"), Row = 2 },
                 }
             },
 
             ["hallway_creaking_board_n"] = new Situation
             {
-                Description = () => "{hallway_creaking_board_n}",
+                Description = () => "You step and — CREEEAK. The floorboard beneath you announces your presence to anyone within a quarter mile. Stealth: zero.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("hallway_kitchen_door"), Row = 1 },
@@ -268,29 +287,29 @@ public class DialogueManager : MonoBehaviour
 
             ["hallway_creaking_board_s"] = new Situation
             {
-                Description = () => "{hallway_creaking_board_s}",
+                Description = () => "CREEEAK. The floorboard groans under your foot. You lift it. It groans again on the way up. The house is definitely doing this on purpose.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("hallway_bedroom_door"), Row = 1 },
                     new Option { Text = () => "Go west along the wall.", OnChosen = () => LoadSituation("hallway_study_door"), Row = 1 },
-                     //new Option { Text = () => "Check under the board.", OnChosen = () => LoadSituation("creaking_board_check"), Row = 2 },
+                    // new Option { Text = () => "Check under the board.", OnChosen = () => LoadSituation("creaking_board_check"), Row = 2 },
                 }
             },
 
             ["hallway_bedroom_door"] = new Situation
             {
-                Description = () => "{hallway_bedroom_door}",
+                Description = () => "A door, and behind it the unmistakable smell of old fabric, dust, and the ghost of a perfume that has been slowly giving up for years. A bedroom, almost certainly.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("exit"), Row = 1 },
-                    new Option { Text = () => "Go west along the wall.", OnChosen = () => LoadSituation("creaking_board_s"), Row = 1 },
+                    new Option { Text = () => "Go west along the wall.", OnChosen = () => LoadSituation("hallway_creaking_board_s"), Row = 1 },
                     new Option { Text = () => "Enter bedroom.", OnChosen = () => LoadSituation("bedroom_door"), Row = 2 },
                 }
             },
 
             ["hallway_o_bedroom_door"] = new Situation
             {
-                Description = () => "{hallway_o_bedroom_door}",
+                Description = () => "North wall. Nothing here except the echo of your own breathing, which is doing absolutely nothing to calm you down.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("hallway_bedroom_door"), Row = 1 },
@@ -301,7 +320,7 @@ public class DialogueManager : MonoBehaviour
 
             ["hallway_kitchen_door"] = new Situation
             {
-                Description = () => "{hallway_kitchen_door}",
+                Description = () => "A door, and through it the distant ghost of cooked food. Your stomach, despite absolutely everything, growls. Priorities.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("exit"), Row = 1 },
@@ -312,7 +331,7 @@ public class DialogueManager : MonoBehaviour
 
             ["hallway_o_kitchen_door"] = new Situation
             {
-                Description = () => "{hallway_o_kitchen_door}",
+                Description = () => "Another wall. You are getting very good at walls. You could write a book. 'Walls I Have Touched: A Memoir.' It would be a short book. But an honest one.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("exit"), Row = 1 },
@@ -325,7 +344,7 @@ public class DialogueManager : MonoBehaviour
 
             ["study_door"] = new Situation
             {
-                Description = () => "{study_door}",
+                Description = () => "The study smells like old paper and long-abandoned ambition. Someone spent a great deal of time in here. You can feel that in the air — the weight of it.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("study_skeleton"), Row = 1 },
@@ -336,7 +355,9 @@ public class DialogueManager : MonoBehaviour
 
             ["study_skeleton"] = new Situation
             {
-                Description = () => (hasFlag("study_skeleton_visited") ? "{study_skeleton}" : "{study_skeleton}")
+                Description = () => (hasFlag("study_skeleton_visited")
+                    ? "You ease back toward the thing that rattled. It hangs there, silently judging your life choices."
+                    : "Your hand sweeps forward and catches something that sways gently and makes a sound that can only be described as rattling. Several things rattle. Several bony, articulated things. You freeze. You breathe. The rattling stops.\n\nOh no.")
                     + (hasFlag("study_skeleton_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
@@ -348,7 +369,9 @@ public class DialogueManager : MonoBehaviour
 
             ["study_table"] = new Situation
             {
-                Description = () => (hasFlag("study_table_visited") ? "{study_table}" : "{study_table}")
+                Description = () => (hasFlag("study_table_visited")
+                    ? "You return to the table. The objects have resettled. The shin is still bruised."
+                    : "You walk into something at shin height and the objects on top shift and clatter loudly. You stand very still, waiting to see if anyone heard that. No one responds. Which might be worse.")
                     + (hasFlag("study_table_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
@@ -362,7 +385,7 @@ public class DialogueManager : MonoBehaviour
 
             ["bathroom_door"] = new Situation
             {
-                Description = () => "{bathroom_door}",
+                Description = () => "Tiles underfoot, cool and slightly gritty. The echo here is different — tighter, wetter. It smells aggressively clean, which feels suspicious given everything else about this place.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "Go east along the wall.", OnChosen = () => LoadSituation("bathroom_bath"), Row = 1 },
@@ -373,7 +396,9 @@ public class DialogueManager : MonoBehaviour
 
             ["bathroom_bath"] = new Situation
             {
-                Description = () => (hasFlag("bathroom_bath_visited") ? "{bathroom_bath}" : "{bathroom_bath}")
+                Description = () => (hasFlag("bathroom_bath_visited")
+                    ? "You approach the bathtub with appropriate caution this time. It sits there, completely smug."
+                    : "You step forward and your knee finds the edge of the bathtub with surgical precision. The bathtub does not apologize. You bite your lip.")
                     + (hasFlag("bathroom_bath_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
@@ -385,7 +410,9 @@ public class DialogueManager : MonoBehaviour
 
             ["bathroom_toilet"] = new Situation
             {
-                Description = () => (hasFlag("bathroom_toilet_visited") ? "{bathroom_toilet}" : "{bathroom_toilet}")
+                Description = () => (hasFlag("bathroom_toilet_visited")
+                    ? "The toilet. It continues to exist, cold and porcelain and utterly unbothered by your situation."
+                    : "Your shin catches something cold and ceramic at exactly the wrong height. It wobbles very slightly. The wobble is somehow more embarrassing than the impact.")
                     + (hasFlag("bathroom_toilet_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
@@ -397,7 +424,9 @@ public class DialogueManager : MonoBehaviour
 
             ["bathroom_sink"] = new Situation
             {
-                Description = () => (hasFlag("bathroom_sink_visited") ? "{bathroom_sink}" : "{bathroom_sink}")
+                Description = () => (hasFlag("bathroom_sink_visited")
+                    ? "Back at the sink. The tap is still dripping. Still judging."
+                    : "Your hands find cold pipes and then a basin edge that stops your forward momentum with a sharp jab to the stomach. The tap drips once, as if laughing.")
                     + (hasFlag("bathroom_sink_checked") ? "\nDo you need something here?" : ""),
                 Options = () => new List<Option>
                 {
@@ -411,7 +440,7 @@ public class DialogueManager : MonoBehaviour
 
             ["bedroom_door"] = new Situation
             {
-                Description = () => "{bedroom_door}",
+                Description = () => "The bedroom. The air is stale in the specific way of rooms that haven't been opened in a while. Thin carpet. The sense of furniture arranged in the dark by someone who knew exactly where everything was.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -422,7 +451,7 @@ public class DialogueManager : MonoBehaviour
 
             ["bedroom_closet"] = new Situation
             {
-                Description = () => "{bedroom_closet}",
+                Description = () => "Your fingers trace a long flat surface — a sliding door. Behind it: fabric. Lots of fabric. Coats, shirts, the soft geography of someone's wardrobe. Nothing obviously dangerous. Probably.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -433,7 +462,7 @@ public class DialogueManager : MonoBehaviour
 
             ["bedroom_nightstand_1"] = new Situation
             {
-                Description = () => "{bedroom_nightstand_1}",
+                Description = () => "A small table beside where a bed should be. Your hands find it immediately — because your hip finds it first. A lamp. A drawer. The texture of an old coaster.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -444,7 +473,7 @@ public class DialogueManager : MonoBehaviour
 
             ["bedroom_nightstand_2"] = new Situation
             {
-                Description = () => "{bedroom_nightstand_2}",
+                Description = () => "The other side. Another nightstand, the mirror image of the first. You reach out and accidentally knock something small. It rolls. You listen to it roll for longer than you'd like.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -455,7 +484,7 @@ public class DialogueManager : MonoBehaviour
 
             ["bedroom_bed"] = new Situation
             {
-                Description = () => "{bedroom_bed}",
+                Description = () => "Your knees find the bed frame and you topple forward onto the mattress. It is softer than everything else in this nightmare. For one brief moment you consider just staying here forever.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -468,7 +497,7 @@ public class DialogueManager : MonoBehaviour
 
             ["livingroom_gramophone"] = new Situation
             {
-                Description = () => "{livingroom_gramophone}",
+                Description = () => "Your hands find a large curved horn and you immediately know what this is. A gramophone. Someone had taste. Someone also had a strange life. The two are not mutually exclusive.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -479,7 +508,7 @@ public class DialogueManager : MonoBehaviour
 
             ["livingroom_casete_table"] = new Situation
             {
-                Description = () => "{livingroom_casete_table}",
+                Description = () => "A low table covered in small rectangles. Your fingers sort through them — tapes. Dozens of tapes. Someone was very serious about their music collection. Or their surveillance operation. Hard to tell.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -490,7 +519,7 @@ public class DialogueManager : MonoBehaviour
 
             ["livingroom_painting_safe"] = new Situation
             {
-                Description = () => "{livingroom_painting_safe}",
+                Description = () => "The wall here has a frame. Large, ornate, the kind of frame that says 'I am hiding something important behind me.' You press behind it and feel cold metal. Of course. Of course there's a safe behind the painting.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -501,7 +530,7 @@ public class DialogueManager : MonoBehaviour
 
             ["livingroom_fireplace"] = new Situation
             {
-                Description = () => "{livingroom_fireplace}",
+                Description = () => "Stone. Ash. The faint residual warmth of something that burned a long time ago. The fireplace takes up most of the wall. You carefully keep your hands well away from the interior.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -512,7 +541,7 @@ public class DialogueManager : MonoBehaviour
 
             ["livingroom_glass_table"] = new Situation
             {
-                Description = () => "{livingroom_glass_table}",
+                Description = () => "You walk into a table that offers absolutely no warning and makes a loud glass-on-glass sound as its contents rattle dramatically. You are becoming an expert in furniture-based combat.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -525,7 +554,7 @@ public class DialogueManager : MonoBehaviour
 
             ["kitchen_door"] = new Situation
             {
-                Description = () => "{kitchen_door}",
+                Description = () => "The kitchen. The air changes here — sharper, with the memory of spices and something that might have been onions. Linoleum underfoot. The kitchen is large and full of edges that are looking forward to meeting you.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -536,7 +565,7 @@ public class DialogueManager : MonoBehaviour
 
             ["kitchen_drawer"] = new Situation
             {
-                Description = () => "{kitchen_drawer}",
+                Description = () => "You find the counter and then the row of drawers below it. You pull one open. It rattles with the sound of various implements. This is either the junk drawer or a very organized person's knife collection.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -547,7 +576,7 @@ public class DialogueManager : MonoBehaviour
 
             ["kitchen_counter"] = new Situation
             {
-                Description = () => "{kitchen_counter}",
+                Description = () => "The counter is long and cold and slightly sticky in one corner. You find a chopping board. An empty glass. The stub of what was once a candle. Someone cooked here. Once.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -558,7 +587,7 @@ public class DialogueManager : MonoBehaviour
 
             ["kitchen_fridge"] = new Situation
             {
-                Description = () => "{kitchen_fridge}",
+                Description = () => "The refrigerator hums at you in a friendly way that feels deeply out of place. You open it. Cold air spills out. The contents are a mystery of varying textures and temperatures. You close it. This is not the time.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -571,7 +600,7 @@ public class DialogueManager : MonoBehaviour
 
             ["exit"] = new Situation
             {
-                Description = () => "{exit}",
+                Description = () => "Your hand finds a door unlike the others — heavier, sealed with weatherstripping and the definite weight of a deadbolt. A front door. You press your palm flat against it. Outside is on the other side of this. Outside.",
                 Options = () => new List<Option>
                 {
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 1 },
@@ -579,10 +608,6 @@ public class DialogueManager : MonoBehaviour
                     new Option { Text = () => "", OnChosen = () => LoadSituation(""), Row = 2 },
                 }
             },
-
-            
-
-
 
         };
     }
@@ -612,7 +637,7 @@ public class DialogueManager : MonoBehaviour
             GameObject minigameGO = new GameObject("JigsawPuzzleMinigame");
             minigameGO.AddComponent<JigsawPuzzleMinigame>();
         }
-        
+
         JigsawPuzzleMinigame.Instance.StartGame(() => OnPuzzleGameComplete());
     }
 
@@ -620,13 +645,12 @@ public class DialogueManager : MonoBehaviour
     {
         Debug.Log("Puzzle game completed!");
         UIManager.Instance.ShowGameplay();
-
         LoadSituation("cabinet_start");
     }
 
     // ── Load a situation ─────────────────────────────────────
 
-    public GameSaveData CreateSaveData()
+public GameSaveData CreateSaveData()
     {
         return new GameSaveData
         {
@@ -690,7 +714,6 @@ public class DialogueManager : MonoBehaviour
 
         return itemNames.ToArray();
     }
-
     public void LoadSituation(string id)
     {
         if (!_situations.TryGetValue(id, out var situation))
