@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
             Debug.LogError("UIManager not found!");
             return;
         }
-        DialogueManager.Instance.LoadSituation("start");
+
+        UIManager.Instance.ShowMainMenu();
     }
 }

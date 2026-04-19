@@ -7,7 +7,6 @@
             <ui:VisualElement name="OptionsContainerR2" class="options-container-r2"/>
         </ui:VisualElement>
         <ui:VisualElement name="PuzzlePanel" class="panel hidden">
-                <ui:Label name="PuzzlePrompt" text="asdfghjkl" />
             </ui:VisualElement>
         <ui:VisualElement name="FeelAroundPanel" class="panel hidden">
             <ui:Label name="FeelAroundPrompt" text="Use your hands to feel what is in front of you." class="feel-around-prompt"/>

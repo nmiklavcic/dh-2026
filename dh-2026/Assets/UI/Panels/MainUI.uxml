@@ -1,6 +1,44 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Panels/MainStyle.uss?fileID=7433441132597879392&amp;guid=5f572149d0f8b13459bdf0ed0d4dda40&amp;type=3#MainStyle"/>
     <ui:VisualElement name="Root" class="root">
+        <ui:VisualElement name="MainMenuPanel" class="panel menu-panel hidden">
+            <ui:VisualElement class="menu-card">
+                <ui:Label text="DARK HOUSE" class="menu-title"/>
+                <ui:Label text="A cold silence waits behind every door." class="menu-subtitle"/>
+                <ui:Button name="StartGameButton" text="Start Game" class="menu-button"/>
+                <ui:Button name="MainMenuSettingsButton" text="Settings" class="menu-button"/>
+                <ui:Button name="QuitGameButton" text="Quit" class="menu-button menu-button-secondary"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="SettingsMenuPanel" class="panel menu-panel hidden">
+            <ui:VisualElement class="menu-card">
+                <ui:Label text="SETTINGS" class="menu-title"/>
+                <ui:Label text="Adjust the atmosphere before you step inside." class="menu-subtitle"/>
+                <ui:VisualElement class="settings-group">
+                    <ui:Label text="Master Volume" class="settings-label"/>
+                    <ui:Slider name="MasterVolumeSlider" low-value="0" high-value="1" value="1"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="settings-group">
+                    <ui:Label text="Music Volume" class="settings-label"/>
+                    <ui:Slider name="MusicVolumeSlider" low-value="0" high-value="1" value="0.85"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="settings-group">
+                    <ui:Label text="SFX Volume" class="settings-label"/>
+                    <ui:Slider name="SfxVolumeSlider" low-value="0" high-value="1" value="0.85"/>
+                </ui:VisualElement>
+                <ui:Toggle name="FullscreenToggle" text="Fullscreen" class="settings-toggle"/>
+                <ui:Button name="SettingsBackButton" text="Back" class="menu-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="PauseMenuPanel" class="panel menu-panel hidden">
+            <ui:VisualElement class="menu-card">
+                <ui:Label text="PAUSED" class="menu-title"/>
+                <ui:Label text="The house can wait for a moment." class="menu-subtitle"/>
+                <ui:Button name="PauseResumeButton" text="Resume" class="menu-button"/>
+                <ui:Button name="PauseSettingsButton" text="Settings" class="menu-button"/>
+                <ui:Button name="PauseMainMenuButton" text="Main Menu" class="menu-button menu-button-secondary"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
         <ui:VisualElement name="GameplayPanel" class="panel">
             <ui:Label name="SituationText" text="" class="situation-text"/>
             <ui:VisualElement name="OptionsContainerR1" class="options-container-r1"/>
