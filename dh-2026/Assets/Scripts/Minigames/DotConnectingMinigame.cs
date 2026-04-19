@@ -1,6 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using System.Collections.Generic;
 
 public class DotConnectingMinigame : MonoBehaviour
 {
@@ -58,15 +59,6 @@ public class DotConnectingMinigame : MonoBehaviour
 
         root.RegisterCallback<PointerMoveEvent>(OnPointerMove);
         root.RegisterCallback<PointerDownEvent>(OnPointerDown);
-
-        dotsContainer.RegisterCallback<GeometryChangedEvent>(OnContainerReady);
-    }
-
-    private void OnContainerReady(GeometryChangedEvent evt)
-    {
-        dotsContainer.UnregisterCallback<GeometryChangedEvent>(OnContainerReady);
-        GenerateRandomDots();
-        isGameActive = true;
     }
 
     private void OnPointerMove(PointerMoveEvent evt)
@@ -240,27 +232,54 @@ public class DotConnectingMinigame : MonoBehaviour
     /// </summary>
     public void StartGame(System.Action onComplete = null)
     {
-        Debug.Log("Starting dot game...");
-        
-        // Show minigame UI and hide gameplay
+        // Clear old visuals immediately so nothing flashes
+        isGameActive = false;
+        dotsContainer?.Clear();
+        linesContainer?.Clear();
+        UIManager.Instance.ClearMinigameFeedback();
+
         UIManager.Instance.ShowMinigame();
-        
-        // Initialize the game
-        ResetGame();
-        
-        // Register completion callback
+
+        // Clear previous callbacks so they don't stack across calls
+        gameCompletedEvent = null;
         if (onComplete != null)
             RegisterCompletionCallback(onComplete);
-        
-        Debug.Log("Dot game initialized and started");
+
+        StartCoroutine(RegenerateNextFrame());
+    }
+
+    private IEnumerator RegenerateNextFrame()
+    {
+        // Wait one frame so the panel layout resolves before generating dots
+        yield return null;
+        RegenerateDots();
+    }
+
+    private void RegenerateDots()
+    {
+        isGameActive = false;
+        nextDotIndex = 0;
+
+        // Destroy existing dot GameObjects
+        foreach (var dot in dots)
+        {
+            if (dot != null)
+                Destroy(dot.gameObject);
+        }
+        dots.Clear();
+
+        // Clear visual elements
+        dotsContainer?.Clear();
+        linesContainer?.Clear();
+        UIManager.Instance.ClearMinigameFeedback();
+
+        // Generate a fresh random set
+        GenerateRandomDots();
+        isGameActive = true;
     }
 
     public void ResetGame()
     {
-        nextDotIndex = 0;
-        foreach (var dot in dots) dot.Reset();
-        linesContainer?.Clear();
-        UIManager.Instance.ClearMinigameFeedback();
-        isGameActive = true;
+        RegenerateDots();
     }
 }

@@ -57,6 +57,7 @@ public class UIManager : MonoBehaviour
     public Label SituationText { get; private set; }
     public VisualElement OptionsContainerR1 { get; private set; }
     public VisualElement OptionsContainerR2 { get; private set; }
+    public VisualElement OptionsContainerR3 { get; private set; }
 
     // Interaction elements
     public Label InteractionText { get; private set; }

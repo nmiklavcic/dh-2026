@@ -5,6 +5,7 @@
             <ui:Label name="SituationText" text="" class="situation-text"/>
             <ui:VisualElement name="OptionsContainerR1" class="options-container-r1"/>
             <ui:VisualElement name="OptionsContainerR2" class="options-container-r2"/>
+            <ui:VisualElement name="OptionsContainerR3" class="options-container-r3 hidden"/>
         </ui:VisualElement>
         <ui:VisualElement name="PuzzlePanel" class="panel hidden">
             </ui:VisualElement>
