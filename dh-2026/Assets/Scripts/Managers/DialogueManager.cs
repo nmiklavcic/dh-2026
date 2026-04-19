@@ -64,6 +64,7 @@ public class DialogueManager : MonoBehaviour
     // ── Situation database (hardcoded for now) ───────────────
 
     private Dictionary<string, Situation> _situations;
+    private string _currentSituation = "";
 
     void Awake()
     {
@@ -81,7 +82,16 @@ public class DialogueManager : MonoBehaviour
                 {
                     // the starting options you are met with when you wake up in the cabinet
                     // One option to get user familiar with the gameplay
-                    new Option { Text = () => "Get up.",  OnChosen = () => LoadSituation("cabinet_start"),  Row = 1 }
+                    new Option { Text = () => "Get up.",  OnChosen = () => {
+                        LoadSituation("cabinet_start");
+                        try
+                        {
+                            SoundManager.Instance.PlaySound("door_open");
+                        } catch (Exception e) { 
+                            Debug.Log("Sound not found. " + e.Message); 
+                        }
+                        
+                    },  Row = 1 }
                 }
             },
 
@@ -673,6 +683,20 @@ public class DialogueManager : MonoBehaviour
             Debug.LogWarning($"Situation '{id}' not found.");
             return;
         }
+
+        // Start loop if entering "start" situation
+        if (id == "start" && _currentSituation != "start")
+        {
+            SoundManager.Instance.PlaySoundLoop("fireplace-1", 0.5f);
+        }
+
+        // Stop loop if leaving "start" situation
+        if (_currentSituation == "start" && id != "start")
+        {
+            SoundManager.Instance.StopLoop();
+        }
+
+        _currentSituation = id;
 
         var ui = UIManager.Instance;
 
