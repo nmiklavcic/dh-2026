@@ -98,19 +98,23 @@ public class DialogueManager : MonoBehaviour
             ["cabinet_door"] = new Situation
             {
                 Description = () => hasFlag("has_doorknob")
-                    ? "Your fingers find the doorframe. You fit the knob onto the spindle — it clicks into place. For the first time, there is a way out of this room."
-                    : hasFlag("cabinet_table_checked")
-                        ? "Your fingers find the doorframe and search for a handle. There is only a bare spindle where a knob should be. The door is going nowhere, and neither are you — not yet."
-                        : "Your fingers find a doorframe. The wood is cold and smooth. Your hand searches for the handle and finds only a bare spindle. Something is missing.",
+                    ? (hasFlag("cabinet_door_visited")
+                        ? "Back at the door. The spindle is still bare and waiting. This time, so is the doorknob in your hand."
+                        : "Your fingers find a doorframe. The wood is cold and smooth. Where a handle should be there is only a bare metal spindle — and your other hand happens to be holding something that feels exactly like a match for it.")
+                    : (hasFlag("cabinet_door_visited")
+                        ? "The door again. The spindle is still bare. You are still not going anywhere."
+                        : "Your fingers find a doorframe. The wood is cold and smooth. Where a handle should be there is only a bare metal spindle. You try to turn it. Nothing moves."),
                 Options = () =>
                 {
                     var opts = new List<Option>
                     {
-                        new Option { Text = () => "Go north hugging the wall.", OnChosen = () => LoadSituation("cabinet_window"), Row = 1 },
-                        new Option { Text = () => "Go south hugging the wall.", OnChosen = () => LoadSituation("cabinet_table"), Row = 1 },
+                        new Option { Text = () => "Go north hugging the wall.", OnChosen = () => { setFlag("cabinet_door_visited"); LoadSituation("cabinet_window"); }, Row = 1 },
+                        new Option { Text = () => "Go south hugging the wall.", OnChosen = () => { setFlag("cabinet_door_visited"); LoadSituation("cabinet_table"); }, Row = 1 },
                     };
                     if (hasFlag("has_doorknob"))
                         opts.Add(new Option { Text = () => "Fit the doorknob and step through.", OnChosen = () => { removeFlag("has_doorknob"); LoadSituation("hallway_cabinet_door"); }, Row = 2 });
+                    else
+                        opts.Add(new Option { Text = () => "Try the door again.", OnChosen = () => { setFlag("cabinet_door_visited"); LoadSituation("cabinet_door"); }, Row = 2 });
                     return opts;
                 },
             },
@@ -147,7 +151,9 @@ public class DialogueManager : MonoBehaviour
             ["cabinet_table"] = new Situation
             {
                 Description = () => hasFlag("cabinet_table_drawer_unlocked")
-                    ? "The drawer is open. Inside, your fingers close around a small metal knob — the missing doorknob from the cabinet door. Without it, you were never getting out of here."
+                    ? (hasFlag("cabinet_door_visited")
+                        ? "The drawer is open. Inside, your fingers close around a small metal knob — the exact kind missing from the cabinet door. Without it, you were never getting out of here."
+                        : "The drawer is open. Inside, your fingers close around a small metal knob. It feels like a doorknob. You're not sure which door needs it, but you pocket it anyway.")
                     : hasFlag("cabinet_table_checked")
                         ? "After a thorough investigation you find a cassette player on top and a locked drawer below. You'll need a key."
                         : (hasFlag("cabinet_table_visited")
